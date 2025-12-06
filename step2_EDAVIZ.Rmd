@@ -11,6 +11,7 @@ output:
     fig-width: 10
     fig-height: 6
     fig-dpi: 300
+    self_contained: false
 ---
 
 ```{r setup, include=FALSE}
