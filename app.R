@@ -324,6 +324,98 @@ ui <- page_navbar(
 # ============================================================
 # Server
 # ============================================================
-server <- function(input, output, session) {}
+server <- function(input, output, session) {  # ----------------------------------------------------------
+  # Reset Filters Button
+  # ----------------------------------------------------------
+  observeEvent(input$reset_filters, {
+    updateSliderInput(session, "year_range", value = c(choices$year_range[1], choices$year_range[2]))
+    updatePickerInput(session, "constructor_nationality", selected = "ALL")
+    updatePickerInput(session, "constructor_name", selected = "ALL")
+    updatePickerInput(session, "driver_name", selected = "ALL")
+    updateCheckboxGroupInput(session, "driver_fatal", selected = choices$driver_fatal)
+  })
+  
+  # ----------------------------------------------------------
+  # Reactive: Filtered Data
+  # ----------------------------------------------------------
+  filtered_data <- reactive({
+    # Apply filters
+    data <- dataOK |>
+      filter(
+        year >= input$year_range[1],
+        year <= input$year_range[2]
+      )
+    
+    # Filter by constructor nationality
+    if (!is.null(input$constructor_nationality) && 
+        input$constructor_nationality != "ALL") {
+      data <- data |>
+        filter(constructor.nationality == input$constructor_nationality)
+    }
+    
+    # Filter by constructor name
+    if (!is.null(input$constructor_name) && 
+        input$constructor_name != "ALL") {
+      data <- data |>
+        filter(constructor.name == input$constructor_name)
+    }
+    
+    # Filter by driver name
+    if (!is.null(input$driver_name) && 
+        input$driver_name != "ALL") {
+      data <- data |>
+        filter(driver.name == input$driver_name)
+    }
+    
+    # Filter by driver fatal status
+    if (!is.null(input$driver_fatal) && length(input$driver_fatal) > 0) {
+      data <- data |>
+        filter(driver.fatal %in% input$driver_fatal)
+    }
+    
+    data
+  })
+  # ----------------------------------------------------------
+  # Reactive: Filtered Data
+  # ----------------------------------------------------------
+  filtered_data <- reactive({
+    # Apply filters
+    data <- dataOK |>
+      filter(
+        year >= input$year_range[1],
+        year <= input$year_range[2]
+      )
+    
+    # Filter by constructor nationality
+    if (!is.null(input$constructor_nationality) && 
+        input$constructor_nationality != "ALL") {
+      data <- data |>
+        filter(constructor.nationality == input$constructor_nationality)
+    }
+    
+    # Filter by constructor name
+    if (!is.null(input$constructor_name) && 
+        input$constructor_name != "ALL") {
+      data <- data |>
+        filter(constructor.name == input$constructor_name)
+    }
+    
+    # Filter by driver name
+    if (!is.null(input$driver_name) && 
+        input$driver_name != "ALL") {
+      data <- data |>
+        filter(driver.name == input$driver_name)
+    }
+    
+    # Filter by driver fatal status
+    if (!is.null(input$driver_fatal) && length(input$driver_fatal) > 0) {
+      data <- data |>
+        filter(driver.fatal %in% input$driver_fatal)
+    }
+    
+    data
+  })
+  
+}
 # Run the application 
 shinyApp(ui = ui, server = server)
