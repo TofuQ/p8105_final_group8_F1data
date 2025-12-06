@@ -207,7 +207,119 @@ ui <- page_navbar(
     .sidebar .control-label { display: flex; align-items: center; }
     /* Bottom margin for layout columns */
     .layout-columns { margin-bottom: 0 !important; }
-  "))),)
+  "))),
+  # ----------------------------------------------------------
+  # Primary tab: Circuit Map
+  # ----------------------------------------------------------
+  nav_panel(
+    title = "Circuit Map",
+    icon = icon("map-location-dot"),
+    
+    # Main content - no need for layout_sidebar since we have a shared sidebar
+    tags$div(style = "height: 15px;"),
+    
+    card(
+      card_header(
+        class = "d-flex justify-content-between align-items-center",
+        tags$span("F1 Circuit Locations", class = "h5 m-0"),
+        tags$div(
+          class = "btn-group",
+          actionButton(
+            inputId = "zoom_all",
+            label = "View All",
+            icon = icon("globe"),
+            class = "btn-sm btn-outline-primary"
+          ),
+          actionButton(
+            inputId = "zoom_europe",
+            label = "Europe",
+            icon = icon("location-dot"),
+            class = "btn-sm btn-outline-primary"
+          )
+        )
+      ),
+      card_body(
+        class = "p-0 map-container",
+        leafletOutput("map", height = "700px")
+      )
+    )
+  ),
+  
+  # ----------------------------------------------------------
+  # Secondary tab: Analytics Dashboard
+  # ----------------------------------------------------------
+  nav_panel(
+    title = "Analytics Dashboard",
+    icon = icon("chart-line"),
+    
+    # Main content - no need for layout_sidebar
+    tags$div(style = "height: 15px;"),
+    
+    # First row: Annual Races and Fatal Event Occurrence
+    card(
+      card_header(
+        class = "d-flex justify-content-between align-items-center",
+        tags$span("Annual Races and Fatal Event Occurrence", class = "h5 m-0")
+      ),
+      card_body(
+        class = "chart-container",
+        plotlyOutput("annual_race_plot", height = "100%")
+      )
+    ),
+    
+    # Second row: Two visualizations side by side
+    layout_columns(
+      col_widths = c(6, 6),
+      
+      # Left column: Distribution of Fatal Events by Constructor
+      card(
+        height = "100%",
+        card_header(
+          "Distribution of Fatal Events by Constructor"
+        ),
+        card_body(
+          class = "chart-container",
+          plotlyOutput("constructor_pie_chart", height = "100%")
+        )
+      ),
+      
+      # Right column: Driver Nationalities and Fatality Rates
+      card(
+        height = "100%",
+        card_header(
+          "Driver Nationalities and Fatality Rates"
+        ),
+        card_body(
+          class = "chart-container",
+          plotlyOutput("nationality_sunburst", height = "100%")
+        )
+      )
+    )
+  ),
+  
+  # ----------------------------------------------------------
+  # Third tab: Data Table
+  # ----------------------------------------------------------
+  nav_panel(
+    title = "Data Table",
+    icon = icon("table"),
+    
+    # Main content - no need for layout_sidebar
+    tags$div(style = "height: 15px;"),
+    
+    card(
+      card_header(
+        class = "d-flex justify-content-between align-items-center",
+        tags$span("Race Results", class = "h5 m-0"),
+        downloadButton("download_data", "Download", class = "btn-sm btn-outline-primary")
+      ),
+      card_body(
+        class = "datatable-container", # Added padding in CSS
+        DTOutput("datatable", height = "100%")
+      )
+    )
+  )
+)
 
 # ============================================================
 # Server
