@@ -416,6 +416,23 @@ server <- function(input, output, session) {  # --------------------------------
     data
   })
   
+  # ----------------------------------------------------------
+  # Output: Data Summary
+  # ----------------------------------------------------------
+  output$data_summary <- renderText({
+    data <- filtered_data()
+    races <- length(unique(data$Race))
+    drivers <- length(unique(data$driver.name))
+    fatalities <- sum(data$driver.fatal == "Death", na.rm = TRUE)
+    
+    paste0(
+      "Showing ", nrow(data), " entries\n",
+      "Races: ", races, " | ",
+      "Drivers: ", drivers, " | ",
+      "Fatal events: ", fatalities
+    )
+  })
+  
 }
 # Run the application 
 shinyApp(ui = ui, server = server)
