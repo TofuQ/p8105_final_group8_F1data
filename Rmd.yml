@@ -12,17 +12,17 @@ website:
     logo: "https://www.formula1.com/etc/designs/fom-website/images/f1_logo.svg"
     logo-alt: "F1 Logo"
     left:
-      - href: index.qmd
+      - href: index.Rmd
         text: Home
       - href: proposal.Rmd
         text: Proposal
-      - href: step1_dataPreprocess.qmd
+      - href: step1_dataPreprocess.Rmd
         text: Data Preparation
-      - href: step2_EDAViz.qmd
+      - href: step2_EDAViz.Rmd
         text: Visualization
-      - href: step3_inferStat.qmd
+      - href: step3_inferStat.Rmd
         text: Statistical Analysis
-      - href: step4_shiny.qmd
+      - href: step4_shiny.Rmd
         text: Interactive Explorer
       - herf: discussion.Rmd
         text: Discussion
