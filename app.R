@@ -433,6 +433,114 @@ server <- function(input, output, session) {  # --------------------------------
     )
   })
   
-}
+  
+  # ----------------------------------------------------------
+  # Reactive: Map Data
+  # ----------------------------------------------------------
+  map_data <- reactive({
+    data <- filtered_data()
+    
+    validate(
+      need(nrow(data) > 0, "No data available for the selected filters")
+    )
+    
+    # Optimize by pre-filtering only necessary columns
+    data |>
+      select(lng, lat, circuit.name, Race, driver.name, driver.fatal) |>
+      # Group by circuit
+      group_by(lng, lat, circuit.name) |>
+      summarise(
+        races = paste(unique(Race), collapse = "<br>"),
+        race_count = n_distinct(Race),
+        has_fatal = any(driver.fatal == "Death", na.rm = TRUE),
+        fatal_drivers = ifelse(
+          any(driver.fatal == "Death", na.rm = TRUE),
+          paste(unique(driver.name[driver.fatal == "Death"]), collapse = ", "),
+          ""
+        ),
+        .groups = "drop"
+      )
+  })
+  
+  # ----------------------------------------------------------
+  # Output: Data Table - prioritizing "Death" rows
+  # ----------------------------------------------------------
+  output$datatable <- renderDT({
+    # Select and rename needed columns with priority for Death
+    table_data <- filtered_data() |>
+      select(
+        Race,
+        driver.name,
+        constructor.name,
+        date,
+        driver.points,
+        driver.fatal
+      ) |>
+      rename(
+        "Grand Prix" = Race,
+        "Driver" = driver.name,
+        "Constructor" = constructor.name,
+        "Date" = date,
+        "Points" = driver.points,
+        "Fatal Status" = driver.fatal
+      ) |>
+      # Sort with Death first, then by date
+      arrange(desc(`Fatal Status` == "Death"), desc(Date))
+    
+    # Check if we have data
+    validate(
+      need(nrow(table_data) > 0, "No data available for the selected filters")
+    )
+    
+    datatable(
+      table_data,
+      options = list(
+        pageLength = 25,
+        scrollX = TRUE,
+        scrollY = "650px",
+        deferRender = TRUE,
+        dom = '<"top"lf>rt<"bottom"ip>',
+        order = list(list(5, 'desc'), list(3, 'desc')),
+        columnDefs = list(
+          list(width = "200px", targets = 0),
+          list(width = "180px", targets = 1),
+          list(width = "180px", targets = 2),
+          list(width = "100px", targets = 3),
+          list(width = "80px", targets = 4),
+          list(width = "100px", targets = 5)
+        )
+      ),
+      filter = "top",
+      rownames = FALSE,
+      class = "display compact stripe hover",
+      caption = htmltools::tags$caption(
+        style = "caption-side: top; text-align: left; font-size: 14px; margin-bottom: 10px;",
+        paste0("Showing ", nrow(table_data), " of ", nrow(dataOK), " records")
+      )
+    ) |>
+      # Highlight fatal events
+      formatStyle(
+        columns = "Fatal Status",
+        target = "row",
+        backgroundColor = styleEqual(
+          levels = "Death",
+          values = "#ffecec"
+        )
+      ) |>
+      formatStyle(
+        columns = "Fatal Status",
+        color = styleEqual(
+          levels = "Death",
+          values = "#E10600"
+        ),
+        fontWeight = styleEqual(
+          levels = "Death",
+          values = "bold"
+        )
+      )
+  })
+  
+  
+  }
 # Run the application 
 shinyApp(ui = ui, server = server)
