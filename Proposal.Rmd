@@ -1,51 +1,120 @@
 ---
-title: "Proposal"
-author: "Angela Lin, Haochen Yu, Jicong Zhang, Lanlan Qing"
-date: "2025-11-05"
-output: 
+output:
+  html_document:
+    theme: cosmo
+    toc: true
+    code_folding: "hide"
+    df_print: paged 
+    self_contained: false 
 ---
+## Motivation
 
-**Group member**: Angela Lin(al4925), Haochen Yu(hy2951), Jicong Zhang(jz3899), Lanlan Qing(lq2250)
+Formula 1 (F1) is one of the most technologically advanced and globally followed motorsports in the world. However, throughout much of its early history, it was also one of the most dangerous. Fatal accidents, particularly between the 1950s and 1970s, were tragically common due to minimal safety regulations, developing engineering standards, and the extreme risks associated with high-speed racing.
 
-**Tentative Project Title**: Statistical Analysis of Accident-Prone Factors in Formula 1 World Championship - Insights from Formula 1 Race Data
+The goal of this project is to examine **fatal driver events in Formula 1 from 1950 to 2024** and evaluate how safety has evolved over time. We aim to understand:
 
-**Motivation**
+* When and why fatal events occurred.
 
-Formula 1 is one of the most technologically advanced and data-driven sports in the world, yet it remains inherently dangerous due to the extreme speeds and physical limits involved. Understanding the factors that contribute to car accidents in Formula 1 is essential not only for improving driver safety but also for enhancing race strategy, track design, and vehicle engineering.
+* How fatality counts have changed over the decades.
 
-In this project, we would like to know how variables such as driver age, city and manufacturers are related to the occurrence of Formula 1 accidents. Understanding these relationships can help identify patterns—for example, whether younger or older drivers are more prone to accidents, whether certain tracks or cities have higher crash rates, or whether specific cars tend to be involved in more incidents, contributing to both improved race conditions and more informed data analysis practices.
+* Whether certain teams, countries, or time periods were disproportionately associated with fatalities.
 
-**Intended final products**
+* Whether there is statistical evidence of improved safety following major regulatory changes.
 
-1. Exploratory Data Analysis (Box plot, Bar graph, Scatter plot)
+This project highlights the evolution of safety in Formula 1 and provides a historical perspective on the sport’s most critical improvements
 
-2. Interactive data visualization (Shiny App)
+## Related Work
+Our project was inspired by:
 
-3. Statistical analysis (Hypothesis Test, Regression)
+* Historical F1 fatality archives such as OldRacingCars, StatsF1, and Wikipedia’s list of fatal accidents.
 
-**Anticipated data source**
+* Discussions in class about web scraping, data cleaning, and exploratory visualization.
 
-1. [Formula 1 Race Safety](https://www.kaggle.com/datasets/jtrotman/formula-1-race-events/data) data (complements) from Kaggle
+* Prior analyses on motorsport safety published in journalistic outlets and blogs, many of which show descriptive trends but lack statistical evaluation.
 
-2. [Formula 1 Race Events](https://www.kaggle.com/datasets/jtrotman/formula-1-race-data) data from Kaggle
+* The FIA’s safety reports and the significant regulatory reforms implemented after the deaths of Ayrton Senna and Roland Ratzenberger in 1994.
 
-**Planned Analyses/ Visualizations**
-
-Intervention by season/era, circuit, street vs. permanent; histograms of SC/VSC counts, red flag frequency over time. Distribution of car accidents by driver age, city and manufacturers, etc; Correlation analysis between car accidents and these variables, or other potential causes/associations among those factors. Accident Heatmap. Histogram of accident (yearly, by person,etc.)
+* These sources influenced our project questions, website structure, and statistical methods.
 
 
-**Coding challenges**
+## Initial Questions
 
-  One challenge in our project is that the dataset spans many years, which results in inconsistent records and missing values. In addition, the data sources are broken into multiple detailed tables (e.g., race location, driver profiles, car team information, etc.), so we need to carefully identify, filter, and merge only the datasets that are relevant to our analysis. 
-  
-**Planned Timeline**
+At the beginning of the project, we aimed to answer broad questions:
 
-November 1-9: Preliminary exploration and proposal.
+(1) How many fatal driver accidents have occurred in Formula 1 history?
 
-November 10-14: Cleaning and visualizing the correlations between each factor (driver age, race location, cars, etc) and incident rates/race results.
+(2) Which time periods had the highest fatality rates?
 
-November 15-25: Analyse data Statistically. Conduct additional outcomes and/or interactive visualization. Complete the discussion part.
+(3) Which constructors and countries were most associated with fatal events?
 
-November 26-December 1: Exchange ideas for members’ work and improve the project. Make screencast.
+(4) Did major regulatory changes significantly reduce fatalities?
 
-December 7-11: Complete and finalize the website. Check the reproducibility and dissemination.
+As the project evolved, additional questions emerged:
+
+* Were certain circuits or race types more dangerous?
+
+* Were younger or less experienced drivers more at risk?
+
+* How did the distribution of fatalities shift geographically over time?
+
+During the exploratory phase, we refined our focus toward three major analytical themes:
+
+(1) Temporal trends (fatalities per decade)
+
+(2) Constructors and nationalities associated with fatalities
+
+(3) Inferential testing to determine whether safety significantly improved after 1994
+
+These new questions guided our statistical analysis and website design.
+
+## Data
+#### Data Source
+Fatal event data was collected from a consolidated dataset derived from publicly available motorsport records.
+
+Each fatal event entry included:
+
+* Driver name
+
+* Date of accident
+
+* Race event and year
+
+* Country and circuit
+
+* Race type
+
+* Constructor (team)
+
+* Cause of death or accident description
+
+#### Scraping Method
+The original dataset was assembled using a combination of:
+
+* Web scraping from motorsport archives
+
+* Manual verification of ambiguous entries
+
+* Text extraction and parsing from HTML tables
+
+* Regular expressions to standardize date formats and names
+
+#### Cleaning Steps
+Cleaning required substantial work due to inconsistent formats across sources:
+
+* Dates were converted into numeric year and month fields.
+
+* Constructor names were standardized (e.g., "Ferrari", "Scuderia Ferrari").
+
+* Driver names were trimmed and normalized.
+
+* Countries were consolidated where naming variations existed (e.g., “UK” vs “United Kingdom”).
+
+* Missing values in nationality or constructor were imputed or labeled `Unknown`.
+
+A final, cleaned dataset was produced and used for all subsequent analyses.
+
+
+
+
+## Site Creators 
+Angela Lin(al4925), Haochen Yu(hy2951), Jicong Zhang(jz3899), Lanlan Qing(lq2250)

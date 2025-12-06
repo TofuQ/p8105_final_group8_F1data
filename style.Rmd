@@ -1,0 +1,69 @@
+---
+title: "F1 Fatal Events Analysis"
+author: "Angela Lin"
+date: "2025-12-01"
+output:
+  html_document:
+    theme: default
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+<style>
+
+/* Custom styles for F1 Fatal Events Analysis */
+
+/* F1 themed colors */
+:root {
+  --f1-red: #E10600;
+  --f1-dark: #15151E;
+}
+
+/* Navbar styling */
+.navbar {
+  border-bottom: 3px solid var(--f1-red);
+}
+
+/* Code block styling */
+.sourceCode {
+  border-left: 3px solid var(--f1-red);
+}
+
+/* Card styling for callouts */
+.callout {
+  border-left-color: var(--f1-red);
+}
+
+/* Table styling */
+table {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Footer styling */
+.nav-footer {
+  border-top: 3px solid var(--f1-red);
+}
+
+/* Iframe styling */
+iframe {
+  margin-top: 1rem;
+}
+
+</style>
+
+# Introduction
+
+This is your R Markdown document using the **custom F1-themed styling**.
+
+You can add text, plots, and code chunks below.
+
+---
+
+# Example Code Chunk
+
+```{r}
+summary(cars)

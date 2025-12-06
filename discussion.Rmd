@@ -1,0 +1,69 @@
+---
+title: "Discussion"
+output:
+  html_document:
+    theme: cosmo
+    toc: true
+    code_folding: "hide"
+    df_print: paged  
+---
+This study provides a comprehensive statistical analysis of fatal events in Formula 1 racing from 1950 to 2024, integrating temporal trends, driver characteristics, circuit features, constructor histories, and multivariate modeling. Across all sections of analysis, one central conclusion emerges: **fatal events in Formula 1 have dramatically declined over time**, but the risk patterns are shaped by a combination of historical, structural, and driver-level factors.
+
+### Temporal Trends and Safety Evolution
+
+Beginning with the time series analysis (Section 2.1), we observe a clear downward trajectory in fatality rates. Fatal events were most frequent in the 1950s and 1960s, a period historically known for minimal safety regulations, fragile car structures, and limited medical response. The decline observed from the 1980s onward aligns with the introduction of major safety innovations such as carbon-fiber monocoque chassis, improved track runoff areas, fire-resistant suits, the HANS device, and more recently, the halo cockpit protection system.
+
+Statistical modeling reinforces these descriptive patterns. The logistic regression indicates that **each additional year is associated with a 3.7% reduction in the odds of a fatal event**, controlling for other variables. This strong temporal effect demonstrates that safety advancements have been the most influential factor in reducing fatalities in the sport.
+
+### Driver-Level Factors: Age and Experience
+
+Driver characteristics were explored in Section 4. While mean age differed slightly between fatal and non-fatal events, the difference was not statistically significant (p = 0.624). This suggests that age alone does not independently determine fatality risk in modern Formula 1. Instead, age may be correlated with experience, driving style, or the era in which the driver competed—factors that may overshadow age as a singular predictor.
+
+Driver experience, however, reveals more meaningful risk patterns. The chi-square test shows **significant differences in fatality rates across experience levels (p = 0.002)**. Rookie drivers (1–10 races) had the highest fatality rate, consistent with the intuitive expectation that unfamiliarity with high-speed race dynamics, limited exposure to extreme conditions, and weaker instinctive decision-making skills increase vulnerability. As experience increases, fatality rates generally decline.
+
+However, in the multivariate logistic regression, experience and age no longer remain statistically significant. This implies that:
+
+1. Their effects may be mediated through other variables (e.g., year, circuit, constructor).
+
+2. Modern safety standards have reduced the relative contribution of individual-level risk factors.
+
+Thus, while experience matters descriptively, its independent predictive power diminishes once broader structural and temporal factors are taken into account.
+
+### Circuit Safety: Historical Risk Concentration
+
+Circuit safety analysis (Section 5) shows that although the ANOVA test did not detect statistically significant differences across all circuits, the visualization of the top 10 “most dangerous” circuits highlights meaningful variability. Circuits such as Nürburgring, Monza, and Rouen-Les-Essarts—historically known for high speeds, long lap distances, elevation changes, and insufficient safety infrastructure—display noticeably elevated fatality rates.
+
+Importantly, in the multivariate model, **circuits with no prior fatal incidents had significantly lower odds of fatal events** compared to circuits with fatal histories (OR ≈ 0.05, p = 0.0039). This result underscores that track-specific risk factors persist even after accounting for driver and temporal variables. Tracks with a legacy of fatal incidents may represent inherently more hazardous environments due to layout complexity, lower visibility, or historical resistance to modernization.
+
+### Constructor Safety and Team Influence
+
+The constructor-level analysis (Section 6) found descriptive differences in fatality rates across teams, but the chi-square test did not indicate statistically significant variation overall (p = 0.491). Still, the multivariate results showed that **constructors with no prior history of fatal events exhibited significantly lower adjusted odds of fatal incidents** (p = 0.0001). This pattern may be tied to engineering quality, team financial resources, historical focus on safety, or era of participation.
+
+Teams that competed primarily during earlier decades—when safety culture was weaker—naturally show higher fatality counts. Meanwhile, modern constructors benefit from stronger regulatory oversight and advanced engineering techniques. Therefore, constructor fatal history serves as a proxy for structural and historical factors influencing risk.
+
+### Integrated Multivariate Insights
+
+The multivariate logistic regression offers the most comprehensive understanding of fatal event risk by evaluating all major predictors simultaneously. Three variables remained independently significant:
+
+1. **Year (p = 0.023)**: Fatal events decrease steadily over time, documenting F1’s long-term safety evolution.
+
+2. **Circuit Fatal History (p = 0.0039)**: Tracks with fatal histories present persistently higher risk, even after controlling for other factors.
+
+3. **Constructor Fatal History (p = 0.0001)**: Team-level structural factors, engineering philosophy, or era effects influence fatality risk.
+
+Driver age and experience, despite showing relevant patterns in earlier sections, did not retain significance in the final model—indicating that structural and historical factors overwhelmingly dominate individual-level characteristics in explaining fatal outcomes.
+
+### Overall Interpretation
+
+Taken together, these results reveal a layered understanding of safety in Formula 1:
+
+* **Macro-Level Trends**: The strongest determinant of risk is time itself—each decade has introduced better regulations, engineering standards, and medical response systems.
+
+* **Environmental Factors**: Circuit and constructor histories reflect meaningful contextual risk embedded in the sport’s infrastructure.
+
+* **Driver Factors**: Age and experience influence risk descriptively but play smaller roles compared to technological and structural improvements.
+
+Formula 1’s transformation from a notoriously deadly sport into a highly regulated and technologically sophisticated environment is reflected directly in the data.
+
+### Conclusion
+This study highlights the profound improvements in Formula 1 safety while identifying critical factors—such as track history, constructor background, and driver inexperience—that have historically contributed to higher fatality risks. The findings reinforce the importance of continuous safety innovation, especially in circuit design and team engineering practices, and they demonstrate how multi-dimensional statistical analysis can illuminate the evolution of risk in a high-speed professional sports.
