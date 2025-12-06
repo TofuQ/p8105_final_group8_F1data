@@ -246,59 +246,7 @@ ui <- page_navbar(
   ),
   
   # ----------------------------------------------------------
-  # Secondary tab: Analytics Dashboard
-  # ----------------------------------------------------------
-  nav_panel(
-    title = "Analytics Dashboard",
-    icon = icon("chart-line"),
-    
-    # Main content - no need for layout_sidebar
-    tags$div(style = "height: 15px;"),
-    
-    # First row: Annual Races and Fatal Event Occurrence
-    card(
-      card_header(
-        class = "d-flex justify-content-between align-items-center",
-        tags$span("Annual Races and Fatal Event Occurrence", class = "h5 m-0")
-      ),
-      card_body(
-        class = "chart-container",
-        plotlyOutput("annual_race_plot", height = "100%")
-      )
-    ),
-    
-    # Second row: Two visualizations side by side
-    layout_columns(
-      col_widths = c(6, 6),
-      
-      # Left column: Distribution of Fatal Events by Constructor
-      card(
-        height = "100%",
-        card_header(
-          "Distribution of Fatal Events by Constructor"
-        ),
-        card_body(
-          class = "chart-container",
-          plotlyOutput("constructor_pie_chart", height = "100%")
-        )
-      ),
-      
-      # Right column: Driver Nationalities and Fatality Rates
-      card(
-        height = "100%",
-        card_header(
-          "Driver Nationalities and Fatality Rates"
-        ),
-        card_body(
-          class = "chart-container",
-          plotlyOutput("nationality_sunburst", height = "100%")
-        )
-      )
-    )
-  ),
-  
-  # ----------------------------------------------------------
-  # Third tab: Data Table
+  # Second tab: Data Table
   # ----------------------------------------------------------
   nav_panel(
     title = "Data Table",
@@ -540,6 +488,138 @@ server <- function(input, output, session) {  # --------------------------------
       )
   })
   
+  # ----------------------------------------------------------
+  # Download handler for the data table
+  # ----------------------------------------------------------
+  output$download_data <- downloadHandler(
+    filename = function() {
+      paste("f1_data_", format(Sys.time(), "%Y%m%d_%H%M"), ".csv", sep = "")
+    },
+    content = function(file) {
+      data <- filtered_data() %>%
+        select(
+          Race, driver.name, constructor.name, 
+          date, driver.points, driver.fatal
+        )
+      write.csv(data, file, row.names = FALSE)
+    }
+  )
+  
+  # ----------------------------------------------------------
+  # Output: Leaflet Map
+  # ----------------------------------------------------------
+  output$map <- renderLeaflet({
+    leaflet() %>%
+      addProviderTiles(
+        providers$CartoDB.Positron,
+        options = providerTileOptions(minZoom = 2, maxZoom = 18)
+      ) %>%
+      setView(lng = 10, lat = 40, zoom = 3) %>%
+      # Add a legend
+      addLegend(
+        position = "bottomright",
+        colors = c("#3498DB", "#E10600"),
+        labels = c("Regular Circuit", "Circuit with Fatal Event"),
+        opacity = 0.8
+      )
+  })
+  
+  # ----------------------------------------------------------
+  # Observer: Map zoom controls
+  # ----------------------------------------------------------
+  observeEvent(input$zoom_all, {
+    leafletProxy("map") %>%
+      setView(lng = 10, lat = 30, zoom = 2)
+  })
+  
+  observeEvent(input$zoom_europe, {
+    leafletProxy("map") %>%
+      setView(lng = 10, lat = 50, zoom = 4)
+  })
+  
+  # ----------------------------------------------------------
+  # Observer: Update map markers
+  # ----------------------------------------------------------
+  observe({
+    data <- map_data()
+    
+    # Skip if no data
+    if (is.null(data) || nrow(data) == 0) {
+      return()
+    }
+    
+    # Clear previous markers
+    proxy <- leafletProxy("map") %>%
+      clearMarkers() %>%
+      clearShapes()
+    
+    # Create HTML labels with styling
+    labels <- lapply(1:nrow(data), function(i) {
+      circuit <- data$circuit.name[i]
+      races <- data$races[i]
+      has_fatal <- data$has_fatal[i]
+      fatal_drivers <- data$fatal_drivers[i]
+      race_count <- data$race_count[i]
+      
+      HTML(paste0(
+        "<div style='font-family: Arial, sans-serif; min-width: 220px;'>",
+        "<div style='background-color: ", ifelse(has_fatal, "#ffecec", "#f0f8ff"), "; ",
+        "padding: 10px; border-radius: 5px 5px 0 0; border-bottom: 2px solid ", 
+        ifelse(has_fatal, "#E10600", "#3498DB"), ";'>",
+        "<strong style='font-size: 16px;'>", circuit, "</strong>",
+        "<div style='margin-top: 4px; font-size: 12px;'>", 
+        race_count, " race", ifelse(race_count > 1, "s", ""), " held",
+        "</div>",
+        "</div>",
+        "<div style='padding: 10px; max-height: 200px; overflow-y: auto; font-size: 13px;'>",
+        if (has_fatal && nchar(fatal_drivers) > 0) {
+          paste0(
+            "<div style='margin-bottom: 10px; padding: 8px; background-color: #ffecec; ",
+            "border-left: 3px solid #E10600; border-radius: 3px;'>",
+            "<strong style='color: #E10600;'>Fatal Incident", 
+            ifelse(grepl(",", fatal_drivers), "s", ""), ":</strong><br>",
+            fatal_drivers,
+            "</div>"
+          )
+        } else { "" },
+        "<div style='font-size: 12px; opacity: 0.9;'>", races, "</div>",
+        "</div>",
+        "</div>"
+      ))
+    })
+    
+    # Add markers
+    proxy %>%
+      addCircleMarkers(
+        data = data,
+        lng = ~lng,
+        lat = ~lat,
+        radius = ~ifelse(has_fatal, 8, 6) + sqrt(race_count),
+        color = ~ifelse(has_fatal, "#E10600", "#3498DB"),
+        fillColor = ~ifelse(has_fatal, "#E10600", "#3498DB"),
+        fillOpacity = ~ifelse(has_fatal, 0.8, 0.6),
+        stroke = TRUE,
+        weight = 2,
+        label = lapply(labels, HTML),
+        labelOptions = labelOptions(
+          style = list(
+            "font-family" = "Arial, sans-serif",
+            "font-size" = "12px",
+            "padding" = "5px",
+            "border-radius" = "3px"
+          ),
+          textsize = "13px",
+          direction = "auto",
+          offset = c(0, -10)
+        ),
+        popup = labels,
+        popupOptions = popupOptions(
+          closeButton = TRUE,
+          closeOnClick = TRUE,
+          minWidth = 250
+        )
+      )
+  })
   
   }
 # Run the application 
