@@ -1,5 +1,5 @@
 name: "F1"
-output-dir: . 
+output_dir = "docs"
 navbar:
   title: "Formula 1 Fatal Events Analysis (1950-2024)"
   left:
