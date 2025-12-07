@@ -5,7 +5,7 @@ account: lq2250
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 16257275
-bundleId: 11285523
+bundleId: 11285948
 url: https://lq2250.shinyapps.io/p8105_final_group8_f1data/
 version: 1
 asMultiple: FALSE
