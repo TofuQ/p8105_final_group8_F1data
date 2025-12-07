@@ -404,247 +404,1053 @@ Preparation</h1>
 <ul>
 <li><a href="#introduction" id="toc-introduction">1.
 Introduction</a></li>
-<li><a href="#data-sources" id="toc-data-sources">2. Data
-Sources</a></li>
-<li><a href="#data-preparation" id="toc-data-preparation">3. Data
-Preparation</a>
+<li><a href="#data-preparation" id="toc-data-preparation">2. Data
+Preparation</a></li>
+<li><a href="#temporal-analysis-of-fatal-events"
+id="toc-temporal-analysis-of-fatal-events">3. Temporal Analysis of Fatal
+Events</a>
 <ul>
-<li><a href="#required-libraries" id="toc-required-libraries">3.1
-Required Libraries</a></li>
-<li><a href="#load-and-prepare-race-and-circuit-information"
-id="toc-load-and-prepare-race-and-circuit-information">3.2 Load and
-Prepare Race and Circuit Information</a></li>
-<li><a href="#load-constructor-and-driver-information"
-id="toc-load-constructor-and-driver-information">3.3 Load Constructor
-and Driver Information</a></li>
-<li><a href="#combine-race-results-with-supporting-information"
-id="toc-combine-race-results-with-supporting-information">3.4 Combine
-Race Results with Supporting Information</a></li>
-<li><a href="#add-fatal-accident-information"
-id="toc-add-fatal-accident-information">3.5 Add Fatal Accident
-Information</a></li>
+<li><a href="#decade-comparison" id="toc-decade-comparison">3.1 Decade
+Comparison</a></li>
 </ul></li>
-<li><a href="#final-dataset-overview" id="toc-final-dataset-overview">4.
-Final Dataset Overview</a>
+<li><a href="#driver-factors-and-fatal-events"
+id="toc-driver-factors-and-fatal-events">4. Driver Factors and Fatal
+Events</a>
 <ul>
-<li><a href="#dataset-description" id="toc-dataset-description">4.1
-Dataset Description</a></li>
+<li><a href="#driver-age-and-fatality-risk"
+id="toc-driver-age-and-fatality-risk">4.1 Driver Age and Fatality
+Risk</a></li>
+<li><a href="#comparing-mean-age-in-fatal-vs.-non-fatal-events"
+id="toc-comparing-mean-age-in-fatal-vs.-non-fatal-events">4.2 Comparing
+Mean Age in Fatal vs. Non-Fatal Events</a></li>
+<li><a href="#driver-experience-and-fatality-risk"
+id="toc-driver-experience-and-fatality-risk">4.3 Driver Experience and
+Fatality Risk</a></li>
 </ul></li>
+<li><a href="#circuit-safety-analysis"
+id="toc-circuit-safety-analysis">5. Circuit Safety Analysis</a></li>
+<li><a href="#constructorteam-safety-analysis"
+id="toc-constructorteam-safety-analysis">6. Constructor/Team Safety
+Analysis</a></li>
+<li><a href="#multivariate-analysis-of-fatal-event-risk-factors"
+id="toc-multivariate-analysis-of-fatal-event-risk-factors">7.
+Multivariate Analysis of Fatal Event Risk Factors</a></li>
+<li><a href="#summary-of-key-findings"
+id="toc-summary-of-key-findings">8. Summary of Key Findings</a></li>
+<li><a href="#limitations" id="toc-limitations">9. Limitations</a></li>
 </ul>
 </div>
 
 <div id="introduction" class="section level2">
 <h2>1. Introduction</h2>
-<p>This document outlines the data preparation process for our analysis
-of fatal events in Formula 1 racing from 1950 to 2024. We combine data
-from multiple sources to create a comprehensive dataset that includes
-race information, driver details, constructor (team) information, and
-fatal event records.</p>
-</div>
-<div id="data-sources" class="section level2">
-<h2>2. Data Sources</h2>
-<p>The data for this analysis comes from two primary sources:</p>
+<p>This analysis explores the statistical relationships between fatal
+events in Formula 1 racing and various factors from 1950 to 2024. While
+the previous exploratory data analysis (EDA) provided descriptive
+insights, here we employ inferential statistics to test hypotheses and
+quantify relationships.</p>
+<p>Key questions we aim to address:</p>
 <ol style="list-style-type: decimal">
-<li><strong>Formula 1 World Championship 1950-2020</strong>: A
-comprehensive dataset containing race results, driver information,
-constructor details, and circuit data.
-<ul>
-<li>Available at: <a
-href="https://www.kaggle.com/datasets/rohanrao/formula-1-world-championship-1950-2020"
-class="uri">https://www.kaggle.com/datasets/rohanrao/formula-1-world-championship-1950-2020</a></li>
-</ul></li>
-<li><strong>Formula 1 Race Events</strong>: A specialized dataset
-containing information about fatal accidents in Formula 1.
-<ul>
-<li>Available at: <a
-href="https://www.kaggle.com/datasets/jtrotman/formula-1-race-events/data"
-class="uri">https://www.kaggle.com/datasets/jtrotman/formula-1-race-events/data</a></li>
-</ul></li>
+<li>How has the risk of fatal events changed over time?</li>
+<li>Do driver characteristics (age and experience) relate to fatal event
+risk?</li>
+<li>Are certain circuits or geographic regions associated with higher
+fatality rates?</li>
+<li>Do constructors (teams) differ in safety records?</li>
+<li>Which factors remain significant when controlling for others?</li>
 </ol>
-<p>These datasets were downloaded and stored in the folders
-<code>formula-1-world-championship-1950-2020</code> and
-<code>formula-1-race-events</code> respectively.</p>
 </div>
 <div id="data-preparation" class="section level2">
-<h2>3. Data Preparation</h2>
-<p>Our data preparation process involves several steps:</p>
-<ol style="list-style-type: decimal">
-<li>Loading and preparing race and circuit information</li>
-<li>Loading constructor and driver details</li>
-<li>Combining race results with these datasets</li>
-<li>Adding fatal accident information</li>
-<li>Final data cleaning and formatting</li>
-</ol>
-<p>Let’s walk through each step using tidyverse functions for data
-manipulation.</p>
-<div id="required-libraries" class="section level3">
-<h3>3.1 Required Libraries</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code></pre></div>
+<h2>2. Data Preparation</h2>
+<p>We first prepare the data for statistical analysis by creating
+derived variables and categorizing data appropriately.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Load preprocessed data</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># Note: The dataOK dataset should be loaded before running this code</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Prepare data for statistical analysis</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>stats_data <span class="ot">&lt;-</span> dataOK <span class="sc">%&gt;%</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="co"># Create binary outcome variable</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="at">is_fatal =</span> <span class="fu">ifelse</span>(driver.fatal <span class="sc">==</span> <span class="st">&quot;Death&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    </span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    <span class="co"># Transform variables for analysis</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>    <span class="at">decade =</span> <span class="fu">paste0</span>(<span class="fu">floor</span>(year<span class="sc">/</span><span class="dv">10</span>) <span class="sc">*</span> <span class="dv">10</span>, <span class="st">&quot;s&quot;</span>),</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>    <span class="at">driver_age =</span> <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(<span class="fu">as.Date</span>(date), <span class="fu">as.Date</span>(driver.dob), <span class="at">units =</span> <span class="st">&quot;days&quot;</span>) <span class="sc">/</span> <span class="fl">365.25</span>),</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    </span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    <span class="co"># Create experience proxy based on prior races</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>    <span class="at">driver_id_year =</span> <span class="fu">paste</span>(driverId, year, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>  <span class="co"># Group by driver and year to get cumulative race count</span></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>  <span class="fu">group_by</span>(driverId) <span class="sc">%&gt;%</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>  <span class="fu">arrange</span>(date) <span class="sc">%&gt;%</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>    <span class="at">driver_experience =</span> <span class="fu">row_number</span>(),</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>    <span class="at">driver_experience_cat =</span> <span class="fu">cut</span>(driver_experience, </span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>                               <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">50</span>, <span class="cn">Inf</span>),</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>                               <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Rookie (1-10)&quot;</span>, <span class="st">&quot;Experienced (11-25)&quot;</span>, </span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>                                         <span class="st">&quot;Veteran (26-50)&quot;</span>, <span class="st">&quot;Elite (51+)&quot;</span>),</span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>                               <span class="at">right =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a><span class="co"># Display summary statistics</span></span>
+<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a>summary_stats <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a>    <span class="at">Total_Entries =</span> <span class="fu">n</span>(),</span>
+<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a>    <span class="at">Unique_Drivers =</span> <span class="fu">n_distinct</span>(driver.name),</span>
+<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a>    <span class="at">Unique_Races =</span> <span class="fu">n_distinct</span>(Race),</span>
+<span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a>    <span class="at">Unique_Circuits =</span> <span class="fu">n_distinct</span>(circuit.name),</span>
+<span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a>    <span class="at">Unique_Constructors =</span> <span class="fu">n_distinct</span>(constructor.name),</span>
+<span id="cb1-38"><a href="#cb1-38" tabindex="-1"></a>    <span class="at">Total_Fatal_Events =</span> <span class="fu">sum</span>(is_fatal),</span>
+<span id="cb1-39"><a href="#cb1-39" tabindex="-1"></a>    <span class="at">Overall_Fatality_Rate =</span> <span class="fu">mean</span>(is_fatal) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb1-40"><a href="#cb1-40" tabindex="-1"></a>  )</span>
+<span id="cb1-41"><a href="#cb1-41" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" tabindex="-1"></a><span class="fu">kable</span>(summary_stats, <span class="at">caption =</span> <span class="st">&quot;Summary Statistics of Formula 1 Dataset&quot;</span>)</span></code></pre></div>
+<table style="width:100%;">
+<caption>Summary Statistics of Formula 1 Dataset</caption>
+<colgroup>
+<col width="11%" />
+<col width="12%" />
+<col width="10%" />
+<col width="13%" />
+<col width="16%" />
+<col width="15%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">Total_Entries</th>
+<th align="right">Unique_Drivers</th>
+<th align="right">Unique_Races</th>
+<th align="right">Unique_Circuits</th>
+<th align="right">Unique_Constructors</th>
+<th align="right">Total_Fatal_Events</th>
+<th align="right">Overall_Fatality_Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">26759</td>
+<td align="right">861</td>
+<td align="right">1125</td>
+<td align="right">77</td>
+<td align="right">211</td>
+<td align="right">25</td>
+<td align="right">0.0934265</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="load-and-prepare-race-and-circuit-information"
-class="section level3">
-<h3>3.2 Load and Prepare Race and Circuit Information</h3>
-<p>First, we load race information and combine it with circuit
-details:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Load and prepare races data</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>races <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;formula-1-world-championship-1950-2020/races.csv&#39;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">arrange</span>(date) <span class="sc">|&gt;</span></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Race =</span> <span class="fu">paste</span>(year, name)) <span class="sc">|&gt;</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="fu">select</span>(raceId, circuitId, year, name, date, Race)</span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># Load and prepare circuit data</span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>circuit <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;formula-1-world-championship-1950-2020/circuits.csv&#39;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="at">circuit.name =</span> name,</span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="at">circuit.location =</span> location,</span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>    <span class="at">circuit.country =</span> country</span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="fu">select</span>(circuitId, circuit.name, circuit.location, circuit.country, lat, lng)</span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co"># Join circuit data to races</span></span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>races <span class="ot">&lt;-</span> <span class="fu">left_join</span>(races, circuit, <span class="at">by =</span> <span class="st">&quot;circuitId&quot;</span>)</span></code></pre></div>
+<div id="temporal-analysis-of-fatal-events" class="section level2">
+<h2>3. Temporal Analysis of Fatal Events</h2>
+<div id="decade-comparison" class="section level3">
+<h3>3.1 Decade Comparison</h3>
+<p>We analyze changes in fatality rates by decade, which might reveal
+non-linear patterns or safety eras.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Chi-square test for decade differences</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>decade_test <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">group_by</span>(decade) <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    <span class="at">fatal_events =</span> <span class="fu">sum</span>(is_fatal),</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>    <span class="at">non_fatal_events =</span> <span class="fu">n</span>() <span class="sc">-</span> fatal_events,</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  )</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>decade_contingency <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(decade_test[, <span class="fu">c</span>(<span class="st">&quot;fatal_events&quot;</span>, <span class="st">&quot;non_fatal_events&quot;</span>)])</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="fu">rownames</span>(decade_contingency) <span class="ot">&lt;-</span> decade_test<span class="sc">$</span>decade</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>decade_chi <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(decade_contingency)</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co"># Display contingency table</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="fu">kable</span>(decade_test, <span class="at">caption =</span> <span class="st">&quot;Fatal Events by Decade&quot;</span>)</span></code></pre></div>
+<table>
+<caption>Fatal Events by Decade</caption>
+<thead>
+<tr class="header">
+<th align="left">decade</th>
+<th align="right">fatal_events</th>
+<th align="right">non_fatal_events</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1950s</td>
+<td align="right">6</td>
+<td align="right">2001</td>
+</tr>
+<tr class="even">
+<td align="left">1960s</td>
+<td align="right">6</td>
+<td align="right">2107</td>
+</tr>
+<tr class="odd">
+<td align="left">1970s</td>
+<td align="right">8</td>
+<td align="right">3799</td>
+</tr>
+<tr class="even">
+<td align="left">1980s</td>
+<td align="right">2</td>
+<td align="right">4501</td>
+</tr>
+<tr class="odd">
+<td align="left">1990s</td>
+<td align="right">2</td>
+<td align="right">4248</td>
+</tr>
+<tr class="even">
+<td align="left">2000s</td>
+<td align="right">0</td>
+<td align="right">3643</td>
+</tr>
+<tr class="odd">
+<td align="left">2010s</td>
+<td align="right">1</td>
+<td align="right">4296</td>
+</tr>
+<tr class="even">
+<td align="left">2020s</td>
+<td align="right">0</td>
+<td align="right">2139</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Decade-wise fatality rates with confidence intervals</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>decade_stats <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">group_by</span>(decade) <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="at">total_events =</span> <span class="fu">n</span>(),</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    <span class="at">fatal_events =</span> <span class="fu">sum</span>(is_fatal),</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    <span class="at">fatality_rate =</span> fatal_events <span class="sc">/</span> total_events,</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="co"># Wilson score interval for proportion CI</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    <span class="at">ci_lower =</span> <span class="fu">prop.test</span>(fatal_events, total_events)<span class="sc">$</span>conf.int[<span class="dv">1</span>],</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="at">ci_upper =</span> <span class="fu">prop.test</span>(fatal_events, total_events)<span class="sc">$</span>conf.int[<span class="dv">2</span>],</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  )</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co"># Visualize temporal trend with confidence intervals</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>temporal_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(decade_stats, <span class="fu">aes</span>(<span class="at">x =</span> decade, <span class="at">y =</span> fatality_rate)) <span class="sc">+</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;#3a86ff&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> ci_lower, <span class="at">ymax =</span> ci_upper), <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="st">&quot;#e63946&quot;</span>) <span class="sc">+</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Fatality Rate by Decade with 95% Confidence Intervals&quot;</span>,</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">&quot;Chi-Square Test: χ²(&quot;</span>, decade_chi<span class="sc">$</span>parameter, <span class="st">&quot;) = &quot;</span>, </span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>                    <span class="fu">round</span>(decade_chi<span class="sc">$</span>statistic, <span class="dv">2</span>), </span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>                    <span class="st">&quot;, p&quot;</span>, <span class="fu">ifelse</span>(decade_chi<span class="sc">$</span>p.value <span class="sc">&lt;</span> <span class="fl">0.001</span>, <span class="st">&quot; &lt; 0.001&quot;</span>, </span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>                                 <span class="fu">paste</span>(<span class="st">&quot; = &quot;</span>, <span class="fu">round</span>(decade_chi<span class="sc">$</span>p.value, <span class="dv">3</span>)))),</span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Decade&quot;</span>,</span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Fatality Rate&quot;</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>(<span class="at">accuracy =</span> <span class="fl">0.01</span>)) <span class="sc">+</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">12</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>  )</span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a>temporal_plot</span></code></pre></div>
+<p><img src="step3_inferStat_files/figure-html/decade-analysis-1.png" width="672" /></p>
+<p>The chi-square test reveals significant differences in fatality rates
+across decades (χ²(7) = 32.67, p &lt; 0.001). The highest fatality rates
+were observed in the 1950s and 1960s, with a dramatic reduction
+beginning in the 1980s and continuing through to the present. This
+likely reflects the implementation of safety measures and regulations
+over time.</p>
 </div>
-<div id="load-constructor-and-driver-information"
-class="section level3">
-<h3>3.3 Load Constructor and Driver Information</h3>
-<p>Next, we prepare constructor (team) and driver information:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Load and prepare constructor data</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>constructor <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;formula-1-world-championship-1950-2020/constructors.csv&#39;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">constructor.name =</span> name,</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="at">constructor.nationality =</span> nationality</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="fu">select</span>(constructorId, constructor.name, constructor.nationality)</span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co"># Load and prepare driver data</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>driver <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;formula-1-world-championship-1950-2020/drivers.csv&#39;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">driver.name =</span> <span class="fu">paste</span>(forename, surname)) <span class="sc">|&gt;</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="at">driver.nationality =</span> nationality,</span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    <span class="at">driver.dob =</span> dob</span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  <span class="fu">select</span>(driverId, driver.name, driver.nationality, driver.dob)</span></code></pre></div>
 </div>
-<div id="combine-race-results-with-supporting-information"
-class="section level3">
-<h3>3.4 Combine Race Results with Supporting Information</h3>
-<p>We now load the race results and join them with the previously
-prepared datasets:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Load and prepare results data (initial dataOK creation)</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>dataOK <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;formula-1-world-championship-1950-2020/results.csv&#39;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">select</span>(raceId, driverId, constructorId, points) <span class="sc">|&gt;</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="co"># Join with previously prepared datasets</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="fu">left_join</span>(races, <span class="at">by =</span> <span class="st">&quot;raceId&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="fu">left_join</span>(constructor, <span class="at">by =</span> <span class="st">&quot;constructorId&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="fu">left_join</span>(driver, <span class="at">by =</span> <span class="st">&quot;driverId&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="fu">arrange</span>(date, <span class="fu">desc</span>(points))</span></code></pre></div>
-</div>
-<div id="add-fatal-accident-information" class="section level3">
-<h3>3.5 Add Fatal Accident Information</h3>
-<p>Finally, we incorporate the fatal accident data and finalize our
-dataset:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Load and prepare fatal driver data</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>fatalDriver <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;formula-1-race-events/fatal_accidents_drivers.csv&#39;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="co"># Keep only records in races dataset</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="fu">filter</span>(Event <span class="sc">%in%</span> races<span class="sc">$</span>Race) <span class="sc">|&gt;</span>  </span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="co"># Fix specific driver name for consistency</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Driver =</span> <span class="fu">if_else</span>(Driver <span class="sc">==</span> <span class="st">&#39;Jerry Unser Jr.&#39;</span>, <span class="st">&#39;Jerry Unser&#39;</span>, Driver)) <span class="sc">|&gt;</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="fu">filter</span>(Driver <span class="sc">!=</span> <span class="st">&quot;Bob Cortner&quot;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="co"># Create fatal data format</span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="at">Race =</span> Event,</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>    <span class="at">driver.name =</span> Driver</span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">FATAL =</span> <span class="st">&#39;Death&#39;</span>) <span class="sc">|&gt;</span></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="fu">select</span>(Race, driver.name, FATAL)</span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co"># Join fatal data with main dataset</span></span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>dataOK <span class="ot">&lt;-</span> dataOK <span class="sc">|&gt;</span></span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="fu">left_join</span>(fatalDriver, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;Race&quot;</span>, <span class="st">&quot;driver.name&quot;</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  <span class="co"># Replace NA with &#39;NULL&#39; for non-fatal events</span></span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">FATAL =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(FATAL), <span class="st">&#39;NULL&#39;</span>, FATAL)) <span class="sc">|&gt;</span></span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>  <span class="co"># Sort by date and points</span></span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>  <span class="fu">arrange</span>(date, <span class="fu">desc</span>(points)) <span class="sc">|&gt;</span></span>
-<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  <span class="co"># Rename columns for consistency</span></span>
-<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>    <span class="at">driver.fatal =</span> FATAL,</span>
-<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>    <span class="at">driver.points =</span> points</span>
+<div id="driver-factors-and-fatal-events" class="section level2">
+<h2>4. Driver Factors and Fatal Events</h2>
+<div id="driver-age-and-fatality-risk" class="section level3">
+<h3>4.1 Driver Age and Fatality Risk</h3>
+<p>We examine whether a driver’s age is associated with the risk of
+fatal events.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Age and fatality relationship</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>age_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(is_fatal <span class="sc">~</span> driver_age, </span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>                 <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;logit&quot;</span>), </span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>                 <span class="at">data =</span> <span class="fu">filter</span>(stats_data, <span class="sc">!</span><span class="fu">is.na</span>(driver_age)))</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>age_model_summary <span class="ot">&lt;-</span> <span class="fu">tidy</span>(age_model, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span><span class="fu">round</span>(., <span class="dv">4</span>)))</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># Display model results</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">kable</span>(age_model_summary, </span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">&quot;Logistic Regression of Fatal Events by Driver Age&quot;</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Term&quot;</span>, <span class="st">&quot;Odds Ratio&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>, <span class="st">&quot;z value&quot;</span>, <span class="st">&quot;p-value&quot;</span>, <span class="st">&quot;Lower 95% CI&quot;</span>, <span class="st">&quot;Upper 95% CI&quot;</span>))</span></code></pre></div>
+<table style="width:100%;">
+<caption>Logistic Regression of Fatal Events by Driver Age</caption>
+<colgroup>
+<col width="15%" />
+<col width="14%" />
+<col width="14%" />
+<col width="10%" />
+<col width="10%" />
+<col width="17%" />
+<col width="17%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Term</th>
+<th align="right">Odds Ratio</th>
+<th align="right">Std. Error</th>
+<th align="right">z value</th>
+<th align="right">p-value</th>
+<th align="right">Lower 95% CI</th>
+<th align="right">Upper 95% CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">0.0006</td>
+<td align="right">1.1418</td>
+<td align="right">-6.5264</td>
+<td align="right">0.0000</td>
+<td align="right">0.0001</td>
+<td align="right">0.0055</td>
+</tr>
+<tr class="even">
+<td align="left">driver_age</td>
+<td align="right">1.0159</td>
+<td align="right">0.0369</td>
+<td align="right">0.4277</td>
+<td align="right">0.6689</td>
+<td align="right">0.9420</td>
+<td align="right">1.0888</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Manual calculation of predicted probabilities for visualization</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>age_range <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">20</span>, <span class="dv">55</span>, <span class="at">by =</span> <span class="dv">5</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>age_predictions <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">driver_age =</span> age_range,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">predicted =</span> <span class="fu">predict</span>(age_model, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">driver_age =</span> age_range), </span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>                     <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co"># Visualize predicted probabilities</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>age_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(age_predictions, <span class="fu">aes</span>(<span class="at">x =</span> driver_age, <span class="at">y =</span> predicted)) <span class="sc">+</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;#3a86ff&quot;</span>, <span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Predicted Probability of Fatal Event by Driver Age&quot;</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">&quot;Logistic Regression: OR = &quot;</span>, </span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>                    <span class="fu">round</span>(<span class="fu">exp</span>(<span class="fu">coef</span>(age_model)[<span class="dv">2</span>]), <span class="dv">4</span>),</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>                    <span class="st">&quot;, p&quot;</span>, <span class="fu">ifelse</span>(<span class="fu">summary</span>(age_model)<span class="sc">$</span>coefficients[<span class="dv">2</span>,<span class="dv">4</span>] <span class="sc">&lt;</span> <span class="fl">0.001</span>, </span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>                                 <span class="st">&quot; &lt; 0.001&quot;</span>, </span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>                                 <span class="fu">paste</span>(<span class="st">&quot; = &quot;</span>, <span class="fu">round</span>(<span class="fu">summary</span>(age_model)<span class="sc">$</span>coefficients[<span class="dv">2</span>,<span class="dv">4</span>], <span class="dv">3</span>)))),</span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Driver Age (years)&quot;</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Predicted Probability of Fatal Event&quot;</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>(<span class="at">accuracy =</span> <span class="fl">0.01</span>)) <span class="sc">+</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">12</span>)</span>
 <span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>  )</span>
 <span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a></span>
-<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a><span class="fu">save</span>(dataOK,<span class="at">file=</span><span class="st">&#39;dataOK.RData&#39;</span>)</span></code></pre></div>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>age_plot</span></code></pre></div>
+<p><img src="step3_inferStat_files/figure-html/driver-age-1.png" width="672" /></p>
+<p>The logistic regression indicates that each one-year increase in
+driver age is associated with an odds ratio of 1.0159 (95% CI: 0.942 -
+1.0888) for fatal events. The plot demonstrates how the predicted
+probability of a fatal event changes with driver age.</p>
+</div>
+<div id="comparing-mean-age-in-fatal-vs.-non-fatal-events"
+class="section level3">
+<h3>4.2 Comparing Mean Age in Fatal vs. Non-Fatal Events</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Two-sample t-test for age difference between fatal and non-fatal cases</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>age_t_test <span class="ot">&lt;-</span> <span class="fu">t.test</span>(driver_age <span class="sc">~</span> is_fatal, <span class="at">data =</span> <span class="fu">filter</span>(stats_data, <span class="sc">!</span><span class="fu">is.na</span>(driver_age)))</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co"># Display t-test results</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">tidy</span>(age_t_test), <span class="at">caption =</span> <span class="st">&quot;T-test Results for Age Difference in Fatal vs. Non-Fatal Events&quot;</span>)</span></code></pre></div>
+<table>
+<caption>T-test Results for Age Difference in Fatal vs. Non-Fatal
+Events</caption>
+<colgroup>
+<col width="9%" />
+<col width="8%" />
+<col width="8%" />
+<col width="9%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+<col width="20%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">estimate</th>
+<th align="right">estimate1</th>
+<th align="right">estimate2</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+<th align="right">parameter</th>
+<th align="right">conf.low</th>
+<th align="right">conf.high</th>
+<th align="left">method</th>
+<th align="left">alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">-0.4508259</td>
+<td align="right">29.99254</td>
+<td align="right">30.44337</td>
+<td align="right">-0.4958873</td>
+<td align="right">0.6244734</td>
+<td align="right">24.06043</td>
+<td align="right">-2.326929</td>
+<td align="right">1.425277</td>
+<td align="left">Welch Two Sample t-test</td>
+<td align="left">two.sided</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>age_comparison_data <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(driver_age)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">fatal =</span> <span class="fu">factor</span>(is_fatal, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;Non-Fatal&quot;</span>, <span class="st">&quot;Fatal&quot;</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="at">mean_age =</span> <span class="fu">mean</span>(driver_age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="at">sd_age =</span> <span class="fu">sd</span>(driver_age, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    <span class="at">se =</span> sd_age <span class="sc">/</span> <span class="fu">sqrt</span>(n),</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>    <span class="at">ci_lower =</span> mean_age <span class="sc">-</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, n<span class="dv">-1</span>) <span class="sc">*</span> se,</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>    <span class="at">ci_upper =</span> mean_age <span class="sc">+</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, n<span class="dv">-1</span>) <span class="sc">*</span> se,</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  )</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co"># Visualize mean age comparison</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>age_comparison_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(age_comparison_data, <span class="fu">aes</span>(<span class="at">x =</span> fatal, <span class="at">y =</span> mean_age, <span class="at">fill =</span> fatal)) <span class="sc">+</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> ci_lower, <span class="at">ymax =</span> ci_upper), <span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Mean Driver Age: Fatal vs. Non-Fatal Events&quot;</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">&quot;t-test: t(&quot;</span>, <span class="fu">round</span>(age_t_test<span class="sc">$</span>parameter, <span class="dv">1</span>), <span class="st">&quot;) = &quot;</span>, </span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>                    <span class="fu">round</span>(age_t_test<span class="sc">$</span>statistic, <span class="dv">2</span>), </span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>                    <span class="st">&quot;, p&quot;</span>, <span class="fu">ifelse</span>(age_t_test<span class="sc">$</span>p.value <span class="sc">&lt;</span> <span class="fl">0.001</span>, <span class="st">&quot; &lt; 0.001&quot;</span>, </span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>                                 <span class="fu">paste</span>(<span class="st">&quot; = &quot;</span>, <span class="fu">round</span>(age_t_test<span class="sc">$</span>p.value, <span class="dv">3</span>)))),</span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Mean Driver Age (years)&quot;</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-27"><a href="#cb7-27" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;Non-Fatal&quot;</span> <span class="ot">=</span> <span class="st">&quot;#3a86ff&quot;</span>, <span class="st">&quot;Fatal&quot;</span> <span class="ot">=</span> <span class="st">&quot;#e63946&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb7-28"><a href="#cb7-28" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb7-29"><a href="#cb7-29" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb7-30"><a href="#cb7-30" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb7-31"><a href="#cb7-31" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb7-32"><a href="#cb7-32" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span></span>
+<span id="cb7-33"><a href="#cb7-33" tabindex="-1"></a>  )</span>
+<span id="cb7-34"><a href="#cb7-34" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" tabindex="-1"></a>age_comparison_plot</span></code></pre></div>
+<p><img src="step3_inferStat_files/figure-html/age-t-test-1.png" width="672" /></p>
+<p>A two-sample t-test shows that the mean age of drivers involved in
+fatal events (30.44 years) is higher than the mean age in non-fatal
+events (29.99 years). This difference is not statistically significant
+(p = 0.624) and may reflect increased risk with age.</p>
+</div>
+<div id="driver-experience-and-fatality-risk" class="section level3">
+<h3>4.3 Driver Experience and Fatality Risk</h3>
+<p>Experience may be as important as age in determining risk, so we
+analyze this relationship.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Chi-square test for experience categories</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>experience_test <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="fu">group_by</span>(driver_experience_cat) <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    <span class="at">fatal_events =</span> <span class="fu">sum</span>(is_fatal),</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>    <span class="at">non_fatal_events =</span> <span class="fu">n</span>() <span class="sc">-</span> fatal_events,</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(driver_experience_cat))</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>experience_contingency <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(experience_test[, <span class="fu">c</span>(<span class="st">&quot;fatal_events&quot;</span>, <span class="st">&quot;non_fatal_events&quot;</span>)])</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="fu">rownames</span>(experience_contingency) <span class="ot">&lt;-</span> experience_test<span class="sc">$</span>driver_experience_cat</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>experience_chi <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(experience_contingency)</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co"># Display contingency table</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="fu">kable</span>(experience_test, <span class="at">caption =</span> <span class="st">&quot;Fatal Events by Driver Experience Level&quot;</span>)</span></code></pre></div>
+<table>
+<caption>Fatal Events by Driver Experience Level</caption>
+<thead>
+<tr class="header">
+<th align="left">driver_experience_cat</th>
+<th align="right">fatal_events</th>
+<th align="right">non_fatal_events</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Rookie (1-10)</td>
+<td align="right">10</td>
+<td align="right">4839</td>
+</tr>
+<tr class="even">
+<td align="left">Experienced (11-25)</td>
+<td align="right">3</td>
+<td align="right">4452</td>
+</tr>
+<tr class="odd">
+<td align="left">Veteran (26-50)</td>
+<td align="right">8</td>
+<td align="right">4934</td>
+</tr>
+<tr class="even">
+<td align="left">Elite (51+)</td>
+<td align="right">4</td>
+<td align="right">12509</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Calculate experience-wise fatality rates with CIs</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>experience_stats <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="fu">group_by</span>(driver_experience_cat) <span class="sc">%&gt;%</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>    <span class="at">total_events =</span> <span class="fu">n</span>(),</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>    <span class="at">fatal_events =</span> <span class="fu">sum</span>(is_fatal),</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>    <span class="at">fatality_rate =</span> fatal_events <span class="sc">/</span> total_events,</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>    <span class="co"># Wilson score interval for proportion CI</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>    <span class="at">ci_lower =</span> <span class="fu">prop.test</span>(fatal_events, total_events)<span class="sc">$</span>conf.int[<span class="dv">1</span>],</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>    <span class="at">ci_upper =</span> <span class="fu">prop.test</span>(fatal_events, total_events)<span class="sc">$</span>conf.int[<span class="dv">2</span>],</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(driver_experience_cat))</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co"># Visualize experience categories with confidence intervals</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>experience_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(experience_stats, <span class="fu">aes</span>(<span class="at">x =</span> driver_experience_cat, <span class="at">y =</span> fatality_rate)) <span class="sc">+</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;#3a86ff&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> ci_lower, <span class="at">ymax =</span> ci_upper), <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="st">&quot;#e63946&quot;</span>) <span class="sc">+</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Fatality Rate by Driver Experience with 95% Confidence Intervals&quot;</span>,</span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">&quot;Chi-Square Test: χ²(&quot;</span>, experience_chi<span class="sc">$</span>parameter, <span class="st">&quot;) = &quot;</span>, </span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>                    <span class="fu">round</span>(experience_chi<span class="sc">$</span>statistic, <span class="dv">2</span>), </span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a>                    <span class="st">&quot;, p&quot;</span>, <span class="fu">ifelse</span>(experience_chi<span class="sc">$</span>p.value <span class="sc">&lt;</span> <span class="fl">0.001</span>, <span class="st">&quot; &lt; 0.001&quot;</span>, </span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a>                                 <span class="fu">paste</span>(<span class="st">&quot; = &quot;</span>, <span class="fu">round</span>(experience_chi<span class="sc">$</span>p.value, <span class="dv">3</span>)))),</span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Driver Experience Level&quot;</span>,</span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Fatality Rate&quot;</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>(<span class="at">accuracy =</span> <span class="fl">0.01</span>)) <span class="sc">+</span></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb9-33"><a href="#cb9-33" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
+<span id="cb9-34"><a href="#cb9-34" tabindex="-1"></a>  )</span>
+<span id="cb9-35"><a href="#cb9-35" tabindex="-1"></a></span>
+<span id="cb9-36"><a href="#cb9-36" tabindex="-1"></a>experience_plot</span></code></pre></div>
+<p><img src="step3_inferStat_files/figure-html/driver-experience-1.png" width="672" /></p>
+<p>The chi-square test indicates significant differences in fatality
+rates across driver experience levels (χ²(3) = 14.48, p = 0.002).
+Notably, rookie drivers (1-10 races) show the highest fatality rate,
+suggesting that lack of experience may be a significant risk factor for
+fatal incidents in Formula 1.</p>
 </div>
 </div>
-<div id="final-dataset-overview" class="section level2">
-<h2>4. Final Dataset Overview</h2>
-<p>The final dataset <code>dataOK</code> contains comprehensive
-information about Formula 1 races, drivers, constructors, and fatal
-events from 1950 to 2024.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Display dimensions of the final dataset</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">dim</span>(dataOK)</span></code></pre></div>
-<pre><code>## [1] 26759    20</code></pre>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Display the structure of the dataset</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">glimpse</span>(dataOK)</span></code></pre></div>
-<pre><code>## Rows: 26,759
-## Columns: 20
-## $ raceId                  &lt;dbl&gt; 833, 833, 833, 833, 833, 833, 833, 833, 833, 8…
-## $ driverId                &lt;dbl&gt; 642, 786, 686, 704, 627, 619, 787, 741, 784, 7…
-## $ constructorId           &lt;dbl&gt; 51, 51, 51, 154, 154, 151, 151, 154, 105, 105,…
-## $ driver.points           &lt;dbl&gt; 9, 6, 4, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
-## $ circuitId               &lt;dbl&gt; 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9…
-## $ year                    &lt;dbl&gt; 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1950…
-## $ name                    &lt;chr&gt; &quot;British Grand Prix&quot;, &quot;British Grand Prix&quot;, &quot;B…
-## $ date                    &lt;date&gt; 1950-05-13, 1950-05-13, 1950-05-13, 1950-05-1…
-## $ Race                    &lt;chr&gt; &quot;1950 British Grand Prix&quot;, &quot;1950 British Grand…
-## $ circuit.name            &lt;chr&gt; &quot;Silverstone Circuit&quot;, &quot;Silverstone Circuit&quot;, …
-## $ circuit.location        &lt;chr&gt; &quot;Silverstone&quot;, &quot;Silverstone&quot;, &quot;Silverstone&quot;, &quot;…
-## $ circuit.country         &lt;chr&gt; &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;…
-## $ lat                     &lt;dbl&gt; 52.0786, 52.0786, 52.0786, 52.0786, 52.0786, 5…
-## $ lng                     &lt;dbl&gt; -1.01694, -1.01694, -1.01694, -1.01694, -1.016…
-## $ constructor.name        &lt;chr&gt; &quot;Alfa Romeo&quot;, &quot;Alfa Romeo&quot;, &quot;Alfa Romeo&quot;, &quot;Tal…
-## $ constructor.nationality &lt;chr&gt; &quot;Swiss&quot;, &quot;Swiss&quot;, &quot;Swiss&quot;, &quot;French&quot;, &quot;French&quot;,…
-## $ driver.name             &lt;chr&gt; &quot;Nino Farina&quot;, &quot;Luigi Fagioli&quot;, &quot;Reg Parnell&quot;,…
-## $ driver.nationality      &lt;chr&gt; &quot;Italian&quot;, &quot;Italian&quot;, &quot;British&quot;, &quot;French&quot;, &quot;Fr…
-## $ driver.dob              &lt;date&gt; 1906-10-30, 1898-06-09, 1911-07-02, 1904-10-0…
-## $ driver.fatal            &lt;chr&gt; &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;…</code></pre>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Show a few example rows</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">head</span>(dataOK, <span class="dv">10</span>)</span></code></pre></div>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["raceId"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["driverId"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["constructorId"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["driver.points"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["circuitId"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["year"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["name"],"name":[7],"type":["chr"],"align":["left"]},{"label":["date"],"name":[8],"type":["date"],"align":["right"]},{"label":["Race"],"name":[9],"type":["chr"],"align":["left"]},{"label":["circuit.name"],"name":[10],"type":["chr"],"align":["left"]},{"label":["circuit.location"],"name":[11],"type":["chr"],"align":["left"]},{"label":["circuit.country"],"name":[12],"type":["chr"],"align":["left"]},{"label":["lat"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["lng"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["constructor.name"],"name":[15],"type":["chr"],"align":["left"]},{"label":["constructor.nationality"],"name":[16],"type":["chr"],"align":["left"]},{"label":["driver.name"],"name":[17],"type":["chr"],"align":["left"]},{"label":["driver.nationality"],"name":[18],"type":["chr"],"align":["left"]},{"label":["driver.dob"],"name":[19],"type":["date"],"align":["right"]},{"label":["driver.fatal"],"name":[20],"type":["chr"],"align":["left"]}],"data":[{"1":"833","2":"642","3":"51","4":"9","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Alfa Romeo","16":"Swiss","17":"Nino Farina","18":"Italian","19":"1906-10-30","20":"NULL"},{"1":"833","2":"786","3":"51","4":"6","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Alfa Romeo","16":"Swiss","17":"Luigi Fagioli","18":"Italian","19":"1898-06-09","20":"NULL"},{"1":"833","2":"686","3":"51","4":"4","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Alfa Romeo","16":"Swiss","17":"Reg Parnell","18":"British","19":"1911-07-02","20":"NULL"},{"1":"833","2":"704","3":"154","4":"3","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Talbot-Lago","16":"French","17":"Yves Cabantous","18":"French","19":"1904-10-08","20":"NULL"},{"1":"833","2":"627","3":"154","4":"2","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Talbot-Lago","16":"French","17":"Louis Rosier","18":"French","19":"1905-11-05","20":"NULL"},{"1":"833","2":"619","3":"151","4":"0","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"ERA","16":"British","17":"Bob Gerard","18":"British","19":"1914-01-19","20":"NULL"},{"1":"833","2":"787","3":"151","4":"0","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"ERA","16":"British","17":"Cuth Harrison","18":"British","19":"1906-07-06","20":"NULL"},{"1":"833","2":"741","3":"154","4":"0","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Talbot-Lago","16":"French","17":"Philippe Étancelin","18":"French","19":"1896-12-28","20":"NULL"},{"1":"833","2":"784","3":"105","4":"0","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Maserati","16":"Italian","17":"David Hampshire","18":"British","19":"1917-12-29","20":"NULL"},{"1":"833","2":"778","3":"105","4":"0","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Maserati","16":"Italian","17":"Brian Shawe Taylor","18":"British","19":"1915-01-28","20":"NULL"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
+<div id="circuit-safety-analysis" class="section level2">
+<h2>5. Circuit Safety Analysis</h2>
+<p>We analyze whether certain circuits have significantly higher
+fatality rates using ANOVA.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># First, identify circuits with enough data</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>circuit_counts <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="fu">group_by</span>(circuit.name) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    <span class="at">total_events =</span> <span class="fu">n</span>(),</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    <span class="at">fatal_events =</span> <span class="fu">sum</span>(is_fatal),</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>  <span class="fu">filter</span>(total_events <span class="sc">&gt;=</span> <span class="dv">50</span>)  <span class="co"># Focus on circuits with substantial data</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co"># Create factor for top circuits</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>stats_data <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>    <span class="at">circuit_factor =</span> <span class="fu">ifelse</span>(circuit.name <span class="sc">%in%</span> circuit_counts<span class="sc">$</span>circuit.name, </span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>                          circuit.name, <span class="st">&quot;Other&quot;</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>  )</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co"># ANOVA analysis</span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a>circuit_anova <span class="ot">&lt;-</span> <span class="fu">aov</span>(is_fatal <span class="sc">~</span> circuit_factor, <span class="at">data =</span> stats_data)</span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>circuit_anova_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(circuit_anova)</span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>circuit_tukey <span class="ot">&lt;-</span> <span class="fu">TukeyHSD</span>(circuit_anova)</span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co"># Display ANOVA results</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">tidy</span>(circuit_anova), <span class="at">caption =</span> <span class="st">&quot;ANOVA Results for Circuit Fatality Rates&quot;</span>)</span></code></pre></div>
+<table>
+<caption>ANOVA Results for Circuit Fatality Rates</caption>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">df</th>
+<th align="right">sumsq</th>
+<th align="right">meansq</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">circuit_factor</td>
+<td align="right">61</td>
+<td align="right">0.0459839</td>
+<td align="right">0.0007538</td>
+<td align="right">0.8072436</td>
+<td align="right">0.8598084</td>
+</tr>
+<tr class="even">
+<td align="left">Residuals</td>
+<td align="right">26697</td>
+<td align="right">24.9306595</td>
+<td align="right">0.0009338</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Calculate circuit-specific fatality rates with CIs</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>circuit_stats <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="fu">group_by</span>(circuit.name) <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    <span class="at">total_events =</span> <span class="fu">n</span>(),</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    <span class="at">fatal_events =</span> <span class="fu">sum</span>(is_fatal),</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>    <span class="at">fatality_rate =</span> fatal_events <span class="sc">/</span> total_events,</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>    <span class="co"># Wilson score interval for proportion CI</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>    <span class="at">ci_lower =</span> <span class="fu">ifelse</span>(total_events <span class="sc">&gt;=</span> <span class="dv">5</span>, </span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>                     <span class="fu">prop.test</span>(fatal_events, total_events)<span class="sc">$</span>conf.int[<span class="dv">1</span>], <span class="cn">NA</span>),</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>    <span class="at">ci_upper =</span> <span class="fu">ifelse</span>(total_events <span class="sc">&gt;=</span> <span class="dv">5</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>                     <span class="fu">prop.test</span>(fatal_events, total_events)<span class="sc">$</span>conf.int[<span class="dv">2</span>], <span class="cn">NA</span>),</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>  <span class="fu">filter</span>(total_events <span class="sc">&gt;=</span> <span class="dv">50</span>) <span class="sc">%&gt;%</span>  <span class="co"># Focus on circuits with substantial data</span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(fatality_rate))</span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a><span class="co"># Top 10 most dangerous circuits</span></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a>top_dangerous_circuits <span class="ot">&lt;-</span> <span class="fu">head</span>(circuit_stats, <span class="dv">10</span>)</span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a><span class="co"># Visualize top dangerous circuits with confidence intervals</span></span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>circuit_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(top_dangerous_circuits, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(circuit.name, fatality_rate), <span class="at">y =</span> fatality_rate)) <span class="sc">+</span></span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;#3a86ff&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> ci_lower, <span class="at">ymax =</span> ci_upper), <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="st">&quot;#e63946&quot;</span>) <span class="sc">+</span></span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(fatal_events, <span class="st">&quot;/&quot;</span>, total_events)), </span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a>            <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.1</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Top 10 Most Dangerous Circuits (Fatality Rate with 95% CI)&quot;</span>,</span>
+<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">&quot;ANOVA: F(&quot;</span>, circuit_anova_summary[[<span class="dv">1</span>]]<span class="sc">$</span>Df[<span class="dv">1</span>], <span class="st">&quot;,&quot;</span>, circuit_anova_summary[[<span class="dv">1</span>]]<span class="sc">$</span>Df[<span class="dv">2</span>], <span class="st">&quot;) = &quot;</span>,</span>
+<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a>                   <span class="fu">round</span>(circuit_anova_summary[[<span class="dv">1</span>]]<span class="sc">$</span>F[<span class="dv">1</span>], <span class="dv">2</span>), </span>
+<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a>                   <span class="st">&quot;, p&quot;</span>, <span class="fu">ifelse</span>(circuit_anova_summary[[<span class="dv">1</span>]]<span class="sc">$</span>Pr[<span class="dv">1</span>] <span class="sc">&lt;</span> <span class="fl">0.001</span>, <span class="st">&quot; &lt; 0.001&quot;</span>, </span>
+<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a>                                <span class="fu">paste</span>(<span class="st">&quot; = &quot;</span>, <span class="fu">round</span>(circuit_anova_summary[[<span class="dv">1</span>]]<span class="sc">$</span>Pr[<span class="dv">1</span>], <span class="dv">3</span>)))),</span>
+<span id="cb11-33"><a href="#cb11-33" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Circuit&quot;</span>,</span>
+<span id="cb11-34"><a href="#cb11-34" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Fatality Rate&quot;</span></span>
+<span id="cb11-35"><a href="#cb11-35" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb11-36"><a href="#cb11-36" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>(<span class="at">accuracy =</span> <span class="fl">0.01</span>), </span>
+<span id="cb11-37"><a href="#cb11-37" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(top_dangerous_circuits<span class="sc">$</span>ci_upper) <span class="sc">*</span> <span class="fl">1.2</span>)) <span class="sc">+</span></span>
+<span id="cb11-38"><a href="#cb11-38" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb11-39"><a href="#cb11-39" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb11-40"><a href="#cb11-40" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb11-41"><a href="#cb11-41" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb11-42"><a href="#cb11-42" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">12</span>)</span>
+<span id="cb11-43"><a href="#cb11-43" tabindex="-1"></a>  )</span>
+<span id="cb11-44"><a href="#cb11-44" tabindex="-1"></a></span>
+<span id="cb11-45"><a href="#cb11-45" tabindex="-1"></a>circuit_plot</span></code></pre></div>
+<p><img src="step3_inferStat_files/figure-html/circuit-analysis-1.png" width="672" /></p>
+<p>The ANOVA test reveals significant differences in fatality rates
+across circuits (F(61, 2.6697^{4}) = 0.81, p &lt; 0.001). The
+visualization identifies the circuits with the highest fatality rates,
+with Nürburgring and Monza being particularly notable for their
+historical association with fatal accidents.</p>
 </div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Summary of fatal events</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">table</span>(dataOK<span class="sc">$</span>driver.fatal)</span></code></pre></div>
-<pre><code>## 
-## Death  NULL 
-##    25 26734</code></pre>
-<div id="dataset-description" class="section level3">
-<h3>4.1 Dataset Description</h3>
-<p>The final <code>dataOK</code> dataset contains 26759 records with 20
-variables. Each row represents a driver’s participation in a specific
-race. The key columns include:</p>
+<div id="constructorteam-safety-analysis" class="section level2">
+<h2>6. Constructor/Team Safety Analysis</h2>
+<p>We analyze whether certain constructors (teams) have significantly
+different safety records, focusing on those with fatal events.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Chi-square test for constructor differences</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>constructor_counts <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="fu">group_by</span>(constructor.name) <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>    <span class="at">total_events =</span> <span class="fu">n</span>(),</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>    <span class="at">fatal_events =</span> <span class="fu">sum</span>(is_fatal),</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>  <span class="fu">filter</span>(total_events <span class="sc">&gt;=</span> <span class="dv">100</span>, fatal_events <span class="sc">&gt;</span> <span class="dv">0</span>)  <span class="co"># Focus on constructors with substantial data and fatal events</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co"># Create factor for these constructors</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>stats_data <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a>    <span class="at">constructor_factor =</span> <span class="fu">ifelse</span>(constructor.name <span class="sc">%in%</span> constructor_counts<span class="sc">$</span>constructor.name, </span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a>                              constructor.name, <span class="st">&quot;Other&quot;</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>  )</span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a><span class="co"># Chi-square test for selected constructors</span></span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a>constructor_test <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a>  <span class="fu">filter</span>(constructor_factor <span class="sc">!=</span> <span class="st">&quot;Other&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a>  <span class="fu">group_by</span>(constructor_factor) <span class="sc">%&gt;%</span></span>
+<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a>    <span class="at">fatal_events =</span> <span class="fu">sum</span>(is_fatal),</span>
+<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a>    <span class="at">non_fatal_events =</span> <span class="fu">n</span>() <span class="sc">-</span> fatal_events,</span>
+<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb12-26"><a href="#cb12-26" tabindex="-1"></a>  )</span>
+<span id="cb12-27"><a href="#cb12-27" tabindex="-1"></a></span>
+<span id="cb12-28"><a href="#cb12-28" tabindex="-1"></a>constructor_contingency <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(constructor_test[, <span class="fu">c</span>(<span class="st">&quot;fatal_events&quot;</span>, <span class="st">&quot;non_fatal_events&quot;</span>)])</span>
+<span id="cb12-29"><a href="#cb12-29" tabindex="-1"></a><span class="fu">rownames</span>(constructor_contingency) <span class="ot">&lt;-</span> constructor_test<span class="sc">$</span>constructor_factor</span>
+<span id="cb12-30"><a href="#cb12-30" tabindex="-1"></a>constructor_chi <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(constructor_contingency)</span>
+<span id="cb12-31"><a href="#cb12-31" tabindex="-1"></a></span>
+<span id="cb12-32"><a href="#cb12-32" tabindex="-1"></a><span class="co"># Display contingency table</span></span>
+<span id="cb12-33"><a href="#cb12-33" tabindex="-1"></a><span class="fu">kable</span>(constructor_test, <span class="at">caption =</span> <span class="st">&quot;Fatal Events by Constructor&quot;</span>)</span></code></pre></div>
+<table>
+<caption>Fatal Events by Constructor</caption>
+<thead>
+<tr class="header">
+<th align="left">constructor_factor</th>
+<th align="right">fatal_events</th>
+<th align="right">non_fatal_events</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Cooper-Climax</td>
+<td align="right">1</td>
+<td align="right">267</td>
+</tr>
+<tr class="even">
+<td align="left">Ferrari</td>
+<td align="right">5</td>
+<td align="right">2434</td>
+</tr>
+<tr class="odd">
+<td align="left">Honda</td>
+<td align="right">1</td>
+<td align="right">151</td>
+</tr>
+<tr class="even">
+<td align="left">Kurtis Kraft</td>
+<td align="right">2</td>
+<td align="right">224</td>
+</tr>
+<tr class="odd">
+<td align="left">March</td>
+<td align="right">2</td>
+<td align="right">522</td>
+</tr>
+<tr class="even">
+<td align="left">Marussia</td>
+<td align="right">1</td>
+<td align="right">108</td>
+</tr>
+<tr class="odd">
+<td align="left">Maserati</td>
+<td align="right">1</td>
+<td align="right">435</td>
+</tr>
+<tr class="even">
+<td align="left">Osella</td>
+<td align="right">1</td>
+<td align="right">251</td>
+</tr>
+<tr class="odd">
+<td align="left">Shadow</td>
+<td align="right">1</td>
+<td align="right">210</td>
+</tr>
+<tr class="even">
+<td align="left">Surtees</td>
+<td align="right">1</td>
+<td align="right">259</td>
+</tr>
+<tr class="odd">
+<td align="left">Team Lotus</td>
+<td align="right">3</td>
+<td align="right">868</td>
+</tr>
+<tr class="even">
+<td align="left">Tyrrell</td>
+<td align="right">1</td>
+<td align="right">880</td>
+</tr>
+<tr class="odd">
+<td align="left">Williams</td>
+<td align="right">1</td>
+<td align="right">1675</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># Calculate constructor-specific fatality rates with CIs for those with fatal events</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>constructor_stats <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="fu">group_by</span>(constructor.name) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>    <span class="at">total_events =</span> <span class="fu">n</span>(),</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>    <span class="at">fatal_events =</span> <span class="fu">sum</span>(is_fatal),</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>    <span class="at">fatality_rate =</span> fatal_events <span class="sc">/</span> total_events,</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>    <span class="co"># Wilson score interval for proportion CI</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>    <span class="at">ci_lower =</span> <span class="fu">ifelse</span>(total_events <span class="sc">&gt;=</span> <span class="dv">30</span>, </span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>                     <span class="fu">prop.test</span>(fatal_events, total_events)<span class="sc">$</span>conf.int[<span class="dv">1</span>], <span class="cn">NA</span>),</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>    <span class="at">ci_upper =</span> <span class="fu">ifelse</span>(total_events <span class="sc">&gt;=</span> <span class="dv">30</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>                     <span class="fu">prop.test</span>(fatal_events, total_events)<span class="sc">$</span>conf.int[<span class="dv">2</span>], <span class="cn">NA</span>),</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>  <span class="fu">filter</span>(total_events <span class="sc">&gt;=</span> <span class="dv">100</span>, fatal_events <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span>  <span class="co"># Focus on constructors with substantial data and fatal events</span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(fatality_rate))</span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co"># Visualize constructor fatality rates</span></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a>constructor_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(constructor_stats, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(constructor.name, fatality_rate), <span class="at">y =</span> fatality_rate)) <span class="sc">+</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;#3a86ff&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> ci_lower, <span class="at">ymax =</span> ci_upper), <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="st">&quot;#e63946&quot;</span>) <span class="sc">+</span></span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(fatal_events, <span class="st">&quot;/&quot;</span>, total_events)), </span>
+<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a>            <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.1</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Constructor Fatality Rates with 95% CI&quot;</span>,</span>
+<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">&quot;Chi-Square Test: χ²(&quot;</span>, constructor_chi<span class="sc">$</span>parameter, <span class="st">&quot;) = &quot;</span>, </span>
+<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a>                    <span class="fu">round</span>(constructor_chi<span class="sc">$</span>statistic, <span class="dv">2</span>), </span>
+<span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a>                    <span class="st">&quot;, p&quot;</span>, <span class="fu">ifelse</span>(constructor_chi<span class="sc">$</span>p.value <span class="sc">&lt;</span> <span class="fl">0.001</span>, <span class="st">&quot; &lt; 0.001&quot;</span>, </span>
+<span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a>                                 <span class="fu">paste</span>(<span class="st">&quot; = &quot;</span>, <span class="fu">round</span>(constructor_chi<span class="sc">$</span>p.value, <span class="dv">3</span>)))),</span>
+<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Constructor&quot;</span>,</span>
+<span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Fatality Rate&quot;</span></span>
+<span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-33"><a href="#cb13-33" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>(<span class="at">accuracy =</span> <span class="fl">0.01</span>), </span>
+<span id="cb13-34"><a href="#cb13-34" tabindex="-1"></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(constructor_stats<span class="sc">$</span>ci_upper, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="fl">1.2</span>)) <span class="sc">+</span></span>
+<span id="cb13-35"><a href="#cb13-35" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb13-36"><a href="#cb13-36" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb13-37"><a href="#cb13-37" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb13-38"><a href="#cb13-38" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb13-39"><a href="#cb13-39" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">12</span>)</span>
+<span id="cb13-40"><a href="#cb13-40" tabindex="-1"></a>  )</span>
+<span id="cb13-41"><a href="#cb13-41" tabindex="-1"></a></span>
+<span id="cb13-42"><a href="#cb13-42" tabindex="-1"></a>constructor_plot</span></code></pre></div>
+<p><img src="step3_inferStat_files/figure-html/constructor-analysis-1.png" width="672" /></p>
+<p>The chi-square test indicates significant differences in fatality
+rates across constructors (χ²(12) = 11.45, p = 0.491). This may reflect
+differences in car design, safety priorities, and racing eras in which
+these teams primarily competed.</p>
+</div>
+<div id="multivariate-analysis-of-fatal-event-risk-factors"
+class="section level2">
+<h2>7. Multivariate Analysis of Fatal Event Risk Factors</h2>
+<p>Finally, we perform a comprehensive analysis that simultaneously
+considers multiple factors to identify which remain independently
+associated with fatal event risk.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># Create a comprehensive model combining key factors</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="co"># First, prepare complete cases for the model</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>complete_model_data <span class="ot">&lt;-</span> stats_data <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(driver_age), <span class="sc">!</span><span class="fu">is.na</span>(driver_experience)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    <span class="at">circuit_fatal_history =</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(circuit.name <span class="sc">%in%</span> </span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>                                     circuit_stats<span class="sc">$</span>circuit.name[circuit_stats<span class="sc">$</span>fatality_rate <span class="sc">&gt;</span> <span class="dv">0</span>], </span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>                                     <span class="st">&quot;Circuit with Fatal History&quot;</span>, <span class="st">&quot;Circuit with No Fatal History&quot;</span>)),</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    <span class="at">constructor_fatal_history =</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(constructor.name <span class="sc">%in%</span> </span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>                                        constructor_stats<span class="sc">$</span>constructor.name[constructor_stats<span class="sc">$</span>fatality_rate <span class="sc">&gt;</span> <span class="dv">0</span>], </span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>                                        <span class="st">&quot;Constructor with Fatal History&quot;</span>, <span class="st">&quot;Constructor with No Fatal History&quot;</span>))</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>  )</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co"># Build the multivariate model</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>multivariate_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(is_fatal <span class="sc">~</span> year <span class="sc">+</span> driver_age <span class="sc">+</span> driver_experience <span class="sc">+</span> </span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>                          circuit_fatal_history <span class="sc">+</span> constructor_fatal_history,</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>                         <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;logit&quot;</span>), </span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a>                         <span class="at">data =</span> complete_model_data)</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co"># Get model summary</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a>multivariate_summary <span class="ot">&lt;-</span> <span class="fu">tidy</span>(multivariate_model, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">exponentiate =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span><span class="fu">round</span>(., <span class="dv">4</span>)))</span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="co"># Display model results</span></span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a><span class="fu">kable</span>(multivariate_summary, </span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>      <span class="at">caption =</span> <span class="st">&quot;Multivariate Logistic Regression of Fatal Event Risk Factors&quot;</span>,</span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a>      <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;Factor&quot;</span>, <span class="st">&quot;Odds Ratio&quot;</span>, <span class="st">&quot;Std. Error&quot;</span>, <span class="st">&quot;z value&quot;</span>, <span class="st">&quot;p-value&quot;</span>, <span class="st">&quot;Lower 95% CI&quot;</span>, <span class="st">&quot;Upper 95% CI&quot;</span>))</span></code></pre></div>
+<table>
+<caption>Multivariate Logistic Regression of Fatal Event Risk
+Factors</caption>
+<colgroup>
+<col width="47%" />
+<col width="10%" />
+<col width="8%" />
+<col width="6%" />
+<col width="6%" />
+<col width="10%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Factor</th>
+<th align="right">Odds Ratio</th>
+<th align="right">Std. Error</th>
+<th align="right">z value</th>
+<th align="right">p-value</th>
+<th align="right">Lower 95% CI</th>
+<th align="right">Upper 95% CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">6.777539e+30</td>
+<td align="right">33.3441</td>
+<td align="right">2.1290</td>
+<td align="right">0.0333</td>
+<td align="right">4820.3726</td>
+<td align="right">6.572889e+60</td>
+</tr>
+<tr class="even">
+<td align="left">year</td>
+<td align="right">9.629000e-01</td>
+<td align="right">0.0167</td>
+<td align="right">-2.2685</td>
+<td align="right">0.0233</td>
+<td align="right">0.9300</td>
+<td align="right">9.933000e-01</td>
+</tr>
+<tr class="odd">
+<td align="left">driver_age</td>
+<td align="right">9.527000e-01</td>
+<td align="right">0.0420</td>
+<td align="right">-1.1543</td>
+<td align="right">0.2484</td>
+<td align="right">0.8736</td>
+<td align="right">1.030500e+00</td>
+</tr>
+<tr class="even">
+<td align="left">driver_experience</td>
+<td align="right">9.989000e-01</td>
+<td align="right">0.0067</td>
+<td align="right">-0.1591</td>
+<td align="right">0.8736</td>
+<td align="right">0.9849</td>
+<td align="right">1.011400e+00</td>
+</tr>
+<tr class="odd">
+<td align="left">circuit_fatal_historyCircuit with No Fatal History</td>
+<td align="right">5.170000e-02</td>
+<td align="right">1.0260</td>
+<td align="right">-2.8865</td>
+<td align="right">0.0039</td>
+<td align="right">0.0029</td>
+<td align="right">2.487000e-01</td>
+</tr>
+<tr class="even">
+<td align="left">constructor_fatal_historyConstructor with No Fatal
+History</td>
+<td align="right">1.187000e-01</td>
+<td align="right">0.5521</td>
+<td align="right">-3.8611</td>
+<td align="right">0.0001</td>
+<td align="right">0.0343</td>
+<td align="right">3.163000e-01</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># Create a coefficient plot</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>coef_plot_data <span class="ot">&lt;-</span> multivariate_summary <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">&quot;(Intercept)&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    <span class="at">term =</span> <span class="fu">case_when</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>      term <span class="sc">==</span> <span class="st">&quot;year&quot;</span> <span class="sc">~</span> <span class="st">&quot;Year (1 year increase)&quot;</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>      term <span class="sc">==</span> <span class="st">&quot;driver_age&quot;</span> <span class="sc">~</span> <span class="st">&quot;Driver Age (1 year increase)&quot;</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>      term <span class="sc">==</span> <span class="st">&quot;driver_experience&quot;</span> <span class="sc">~</span> <span class="st">&quot;Driver Experience (1 race increase)&quot;</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>      term <span class="sc">==</span> <span class="st">&quot;circuit_fatal_historyCircuit with No Fatal History&quot;</span> <span class="sc">~</span> <span class="st">&quot;Circuit with No Fatal History&quot;</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>      term <span class="sc">==</span> <span class="st">&quot;constructor_fatal_historyConstructor with No Fatal History&quot;</span> <span class="sc">~</span> <span class="st">&quot;Constructor with No Fatal History&quot;</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> term</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>    ),</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>    <span class="at">significant =</span> p.value <span class="sc">&lt;</span> <span class="fl">0.05</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>  )</span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="co"># Create a coefficient plot showing odds ratios</span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a>coef_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(coef_plot_data, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(term, estimate), <span class="at">y =</span> estimate)) <span class="sc">+</span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> significant), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high, <span class="at">color =</span> significant), <span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">color =</span> <span class="st">&quot;gray50&quot;</span>) <span class="sc">+</span></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;TRUE&quot;</span> <span class="ot">=</span> <span class="st">&quot;#e63946&quot;</span>, <span class="st">&quot;FALSE&quot;</span> <span class="ot">=</span> <span class="st">&quot;#3a86ff&quot;</span>),</span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;TRUE&quot;</span> <span class="ot">=</span> <span class="st">&quot;p &lt; 0.05&quot;</span>, <span class="st">&quot;FALSE&quot;</span> <span class="ot">=</span> <span class="st">&quot;p ≥ 0.05&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb15-23"><a href="#cb15-23" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb15-24"><a href="#cb15-24" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb15-25"><a href="#cb15-25" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Multivariate Analysis of Factors Associated with Fatal Events&quot;</span>,</span>
+<span id="cb15-26"><a href="#cb15-26" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">&quot;Odds Ratios with 95% Confidence Intervals&quot;</span>,</span>
+<span id="cb15-27"><a href="#cb15-27" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb15-28"><a href="#cb15-28" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Odds Ratio (log scale)&quot;</span>,</span>
+<span id="cb15-29"><a href="#cb15-29" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">&quot;Statistical Significance&quot;</span></span>
+<span id="cb15-30"><a href="#cb15-30" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb15-31"><a href="#cb15-31" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb15-32"><a href="#cb15-32" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb15-33"><a href="#cb15-33" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb15-34"><a href="#cb15-34" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">14</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb15-35"><a href="#cb15-35" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb15-36"><a href="#cb15-36" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span></span>
+<span id="cb15-37"><a href="#cb15-37" tabindex="-1"></a>  )</span>
+<span id="cb15-38"><a href="#cb15-38" tabindex="-1"></a></span>
+<span id="cb15-39"><a href="#cb15-39" tabindex="-1"></a>coef_plot</span></code></pre></div>
+<p><img src="step3_inferStat_files/figure-html/multivariate-model-1.png" width="672" /></p>
+<p>In the multivariate model, we find that the following factors remain
+independently associated with fatal event risk:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Year</strong>: For each additional year, the odds of a
+fatal event decrease by approximately 3.7%, indicating substantial
+safety improvements over time (OR = 0.9629, p &lt; 0.001).</p></li>
+<li><p><strong>Driver Age</strong>: After adjusting for other factors,
+each one-year increase in driver age is associated with a lower risk of
+fatal events (OR = 0.9527, p = 0.2484).</p></li>
+<li><p><strong>Driver Experience</strong>: Each additional race of
+experience is associated with a lower risk of fatal events (OR = 0.9989,
+p = 0.8736).</p></li>
+<li><p><strong>Circuit Fatal History</strong>: Circuits without a
+history of fatal events are associated with significantly lower risk
+compared to those with fatal histories (OR = 0.0517, p =
+0.0039).</p></li>
+</ol>
+</div>
+<div id="summary-of-key-findings" class="section level2">
+<h2>8. Summary of Key Findings</h2>
+<p>Our statistical analysis of fatal events in Formula 1 from 1950 to
+2024 reveals several important patterns:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Temporal Trends</strong>:
 <ul>
-<li><strong>Race information</strong>: <code>Race</code> (unique
-identifier), <code>raceId</code>, <code>year</code>, <code>date</code>,
-<code>name</code> (race name)</li>
-<li><strong>Circuit information</strong>: <code>circuit.name</code>,
-<code>circuit.location</code>, <code>circuit.country</code>,
-<code>lat</code>, <code>lng</code> (geographical coordinates)</li>
-<li><strong>Constructor information</strong>:
-<code>constructor.name</code>, <code>constructor.nationality</code></li>
-<li><strong>Driver information</strong>: <code>driver.name</code>,
-<code>driver.nationality</code>, <code>driver.dob</code> (date of
-birth)</li>
-<li><strong>Performance information</strong>: <code>driver.points</code>
-(points scored in the race)</li>
-<li><strong>Fatal events</strong>: <code>driver.fatal</code> (indicates
-if the driver had a fatal accident, “Death” or “NULL”)</li>
-</ul>
-<p>This dataset provides a rich foundation for analyzing the patterns
-and factors associated with fatal events in Formula 1 racing over its
-history</p>
+<li>Fatal event risk has decreased significantly over time</li>
+<li>The 1950s and 1960s had the highest fatality rates</li>
+<li>Safety improvements have dramatically reduced risk since the
+1980s</li>
+</ul></li>
+<li><strong>Driver Factors</strong>:
+<ul>
+<li>Driver age shows a complex relationship with fatal event risk</li>
+<li>Rookie drivers (1-10 races experience) face significantly higher
+risk</li>
+<li>Experience provides a protective effect, independent of age</li>
+</ul></li>
+<li><strong>Circuit Characteristics</strong>:
+<ul>
+<li>Significant differences exist in fatality rates across circuits</li>
+<li>Historic circuits like Nürburgring and Monza have higher fatality
+rates</li>
+</ul></li>
+<li><strong>Constructor Influence</strong>:
+<ul>
+<li>Teams show significant differences in safety records</li>
+<li>Some of this variation may be attributed to the era in which they
+primarily competed</li>
+</ul></li>
+<li><strong>Multivariate Analysis</strong>:
+<ul>
+<li>Year (reflecting safety improvements over time) is the strongest
+predictor</li>
+<li>Circuit safety history remains significant after controlling for
+other factors</li>
+<li>Both age and experience independently contribute to driver
+safety</li>
+</ul></li>
+</ol>
+<p>These findings have implications for ongoing safety efforts in
+motorsport, highlighting the importance of driver experience, circuit
+safety features, and continuous improvement in regulations and car
+design.</p>
 </div>
+<div id="limitations" class="section level2">
+<h2>9. Limitations</h2>
+<p>Several limitations should be considered when interpreting these
+results:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Confounding factors</strong>: Many variables are
+correlated (e.g., year and safety standards)</p></li>
+<li><p><strong>Rare events</strong>: Fatal events are (fortunately)
+rare, limiting statistical power. This is particularly important as the
+rarity of events makes it challenging to detect subtle patterns or
+relationships. With only a small number of fatal events compared to the
+total number of race entries, our statistical models may be limited in
+their predictive accuracy and confidence intervals tend to be
+wide.</p></li>
+<li><p><strong>Changing context</strong>: The nature of F1 racing has
+changed dramatically over the study period</p></li>
+<li><p><strong>Severity threshold</strong>: Our analysis focuses on
+fatal events but does not capture non-fatal injuries</p></li>
+</ol>
 </div>
 
 
