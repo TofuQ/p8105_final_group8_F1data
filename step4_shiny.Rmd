@@ -21,115 +21,50 @@ This interactive Shiny application <https://lq2250.shinyapps.io/p8105_final_grou
 - **Data Table**: Browse and download filtered race results data
 
 
-<!-- The beautification improvement by chat -->
-
-<!-- Shiny App Insertion -->
+<!-- Shiny App Embedding - F1 Style -->
 <div style="
-  width: 100%; 
-  max-width: 1400px; 
-  margin: 30px auto; 
-  padding: 0 15px;
+  width: 100%;
+  max-width: 100%;
+  margin: 1.2rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 ">
-  <div style="
-    position: relative;
-    width: 100%;
-    height: 900px;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-    border: 1px solid #f0f0f0;
-    overflow: hidden;
-    transition: all 0.3s ease;
-  ">
-    <!-- Topic -->
-    <div style="
-      background: linear-gradient(90deg, #E10600 0%, #C00500 100%);
-      color: white;
-      padding: 12px 20px;
-      font-family: 'Arial', sans-serif;
-      font-weight: bold;
-      font-size: 16px;
-      letter-spacing: 0.5px;
-    ">
-      Formula 1 Fatal Events Interactive Explorer
-    </div>
-    <!-- Shiny App insert  -->
-    <iframe 
-      src="https://lq2250.shinyapps.io/p8105_final_group8_f1data/" 
-      width="100%" 
-      height="calc(100% - 46px)"  
-      style="border: none;"
-      allowfullscreen
-      loading="lazy">  
-    </iframe>
-    <!-- Decoration band -->
-    <div style="
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: linear-gradient(90deg, #000000 0%, #333333 100%);
-    "></div>
-  </div>
+  <iframe 
+    src="https://lq2250.shinyapps.io/p8105_final_group8_f1data/" 
+    width="100%" 
+    height="900px" 
+    style="border: none;"
+    allowfullscreen>
+  </iframe>
 </div>
 
-<!-- Promote box -->
+<!-- F1 Style Tips Box (Larger Text + Closer to Top) -->
 <div style="
-  max-width: 1400px;
-  margin: 30px auto;
-  padding: 0 15px;
+  background: #fafafa;
+  border-left: 4px solid #E10600;
+  border-radius: 8px;
+  padding: 1rem 2rem;
+  margin: 1.2rem 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 ">
-  <div style="
-    background: #f9f9f9;
-    border-left: 6px solid #E10600;
-    border-radius: 8px;
-    padding: 20px 25px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    font-family: 'Arial', sans-serif;
+  <h4 style="
+    color: #E10600;
+    margin: 0 0 1.2rem 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  ">Tips for Using the Explorer</h4>
+  <ul style="
+    margin: 0;
+    padding-left: 2rem;
+    line-height: 2;
+    color: #333;
+    font-size: 1.4rem;
   ">
-    <h4 style="
-      color: #E10600;
-      margin: 0 0 12px 0;
-      font-size: 18px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-    ">
-      <span style="
-        display: inline-block;
-        width: 24px;
-        height: 24px;
-        background: #E10600;
-        color: white;
-        border-radius: 50%;
-        text-align: center;
-        line-height: 24px;
-        margin-right: 10px;
-        font-size: 14px;
-      ">!</span>
-      Tips for Using the Explorer
-    </h4>
-    <ul style="
-      margin: 0;
-      padding-left: 34px;
-      color: #333333;
-      line-height: 1.8;
-      font-size: 15px;
-    ">
-      <li style="margin-bottom: 8px;">Use the sidebar filters to narrow down the data</li>
-      <li style="margin-bottom: 8px;">Click on map markers to see detailed circuit information</li>
-      <li style="margin-bottom: 8px;">In the Data Table, fatal events are highlighted in red and appear first</li>
-      <li>Use the Download button to export filtered data</li>
-    </ul>
-      <!-- bottom sign -->
-    <div style="
-      margin-top: 15px;
-      padding-top: 15px;
-      border-top: 1px dashed #e0e0e0;
-      color: #666;
-      font-size: 12px;
-    ">
-      Formula 1 Safety Analysis • 1950-2024
-    </div>
-  </div>
+    <li>Use the sidebar filters to narrow down the data</li>
+    <li>Click on map markers to see detailed circuit information</li>
+    <li>In the Data Table, fatal events are highlighted in red and appear first</li>
+    <li>Use the Download button to export filtered data</li>
+  </ul>
 </div>
