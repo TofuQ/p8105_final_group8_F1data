@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Discussion</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Formula 1 Fatal Events Analysis (1950-2024)</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Proposal.html">Proposal</a>
+</li>
+<li>
+  <a href="step1_dataPreprocess.html">Data Preparation</a>
+</li>
+<li>
+  <a href="step2_EDAViz.html">Visualization</a>
+</li>
+<li>
+  <a href="step3_inferStat.html">Statistical Analysis</a>
+</li>
+<li>
+  <a href="step4_shiny.html">Interactive Explorer</a>
+</li>
+<li>
+  <a href="discussion.html">Discussion</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/TofuQ/p8105_final_group8_F1data.git">
+    <span class="fa fa-github"></span>
+     
+    GitHub
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Discussion</h1>
+
+</div>
+
+
+<p>This study provides a comprehensive statistical analysis of fatal
+events in Formula 1 racing from 1950 to 2024, integrating temporal
+trends, driver characteristics, circuit features, constructor histories,
+and multivariate modeling. Across all sections of analysis, one central
+conclusion emerges: <strong>fatal events in Formula 1 have dramatically
+declined over time</strong>, but the risk patterns are shaped by a
+combination of historical, structural, and driver-level factors.</p>
+<div id="temporal-trends-and-safety-evolution" class="section level3">
+<h3>Temporal Trends and Safety Evolution</h3>
+<p>Beginning with the time series analysis (Section 2.1), we observe a
+clear downward trajectory in fatality rates. Fatal events were most
+frequent in the 1950s and 1960s, a period historically known for minimal
+safety regulations, fragile car structures, and limited medical
+response. The decline observed from the 1980s onward aligns with the
+introduction of major safety innovations such as carbon-fiber monocoque
+chassis, improved track runoff areas, fire-resistant suits, the HANS
+device, and more recently, the halo cockpit protection system.</p>
+<p>Statistical modeling reinforces these descriptive patterns. The
+logistic regression indicates that <strong>each additional year is
+associated with a 3.7% reduction in the odds of a fatal event</strong>,
+controlling for other variables. This strong temporal effect
+demonstrates that safety advancements have been the most influential
+factor in reducing fatalities in the sport.</p>
+</div>
+<div id="driver-level-factors-age-and-experience"
+class="section level3">
+<h3>Driver-Level Factors: Age and Experience</h3>
+<p>Driver characteristics were explored in Section 4. While mean age
+differed slightly between fatal and non-fatal events, the difference was
+not statistically significant (p = 0.624). This suggests that age alone
+does not independently determine fatality risk in modern Formula 1.
+Instead, age may be correlated with experience, driving style, or the
+era in which the driver competed—factors that may overshadow age as a
+singular predictor.</p>
+<p>Driver experience, however, reveals more meaningful risk patterns.
+The chi-square test shows <strong>significant differences in fatality
+rates across experience levels (p = 0.002)</strong>. Rookie drivers
+(1–10 races) had the highest fatality rate, consistent with the
+intuitive expectation that unfamiliarity with high-speed race dynamics,
+limited exposure to extreme conditions, and weaker instinctive
+decision-making skills increase vulnerability. As experience increases,
+fatality rates generally decline.</p>
+<p>However, in the multivariate logistic regression, experience and age
+no longer remain statistically significant. This implies that:</p>
+<ol style="list-style-type: decimal">
+<li><p>Their effects may be mediated through other variables (e.g.,
+year, circuit, constructor).</p></li>
+<li><p>Modern safety standards have reduced the relative contribution of
+individual-level risk factors.</p></li>
+</ol>
+<p>Thus, while experience matters descriptively, its independent
+predictive power diminishes once broader structural and temporal factors
+are taken into account.</p>
+</div>
+<div id="circuit-safety-historical-risk-concentration"
+class="section level3">
+<h3>Circuit Safety: Historical Risk Concentration</h3>
+<p>Circuit safety analysis (Section 5) shows that although the ANOVA
+test did not detect statistically significant differences across all
+circuits, the visualization of the top 10 “most dangerous” circuits
+highlights meaningful variability. Circuits such as Nürburgring, Monza,
+and Rouen-Les-Essarts—historically known for high speeds, long lap
+distances, elevation changes, and insufficient safety
+infrastructure—display noticeably elevated fatality rates.</p>
+<p>Importantly, in the multivariate model, <strong>circuits with no
+prior fatal incidents had significantly lower odds of fatal
+events</strong> compared to circuits with fatal histories (OR ≈ 0.05, p
+= 0.0039). This result underscores that track-specific risk factors
+persist even after accounting for driver and temporal variables. Tracks
+with a legacy of fatal incidents may represent inherently more hazardous
+environments due to layout complexity, lower visibility, or historical
+resistance to modernization.</p>
+</div>
+<div id="constructor-safety-and-team-influence" class="section level3">
+<h3>Constructor Safety and Team Influence</h3>
+<p>The constructor-level analysis (Section 6) found descriptive
+differences in fatality rates across teams, but the chi-square test did
+not indicate statistically significant variation overall (p = 0.491).
+Still, the multivariate results showed that <strong>constructors with no
+prior history of fatal events exhibited significantly lower adjusted
+odds of fatal incidents</strong> (p = 0.0001). This pattern may be tied
+to engineering quality, team financial resources, historical focus on
+safety, or era of participation.</p>
+<p>Teams that competed primarily during earlier decades—when safety
+culture was weaker—naturally show higher fatality counts. Meanwhile,
+modern constructors benefit from stronger regulatory oversight and
+advanced engineering techniques. Therefore, constructor fatal history
+serves as a proxy for structural and historical factors influencing
+risk.</p>
+</div>
+<div id="integrated-multivariate-insights" class="section level3">
+<h3>Integrated Multivariate Insights</h3>
+<p>The multivariate logistic regression offers the most comprehensive
+understanding of fatal event risk by evaluating all major predictors
+simultaneously. Three variables remained independently significant:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Year (p = 0.023)</strong>: Fatal events decrease steadily
+over time, documenting F1’s long-term safety evolution.</p></li>
+<li><p><strong>Circuit Fatal History (p = 0.0039)</strong>: Tracks with
+fatal histories present persistently higher risk, even after controlling
+for other factors.</p></li>
+<li><p><strong>Constructor Fatal History (p = 0.0001)</strong>:
+Team-level structural factors, engineering philosophy, or era effects
+influence fatality risk.</p></li>
+</ol>
+<p>Driver age and experience, despite showing relevant patterns in
+earlier sections, did not retain significance in the final
+model—indicating that structural and historical factors overwhelmingly
+dominate individual-level characteristics in explaining fatal
+outcomes.</p>
+</div>
+<div id="overall-interpretation" class="section level3">
+<h3>Overall Interpretation</h3>
+<p>Taken together, these results reveal a layered understanding of
+safety in Formula 1:</p>
+<ul>
+<li><p><strong>Macro-Level Trends</strong>: The strongest determinant of
+risk is time itself—each decade has introduced better regulations,
+engineering standards, and medical response systems.</p></li>
+<li><p><strong>Environmental Factors</strong>: Circuit and constructor
+histories reflect meaningful contextual risk embedded in the sport’s
+infrastructure.</p></li>
+<li><p><strong>Driver Factors</strong>: Age and experience influence
+risk descriptively but play smaller roles compared to technological and
+structural improvements.</p></li>
+</ul>
+<p>Formula 1’s transformation from a notoriously deadly sport into a
+highly regulated and technologically sophisticated environment is
+reflected directly in the data.</p>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
+<p>This study highlights the profound improvements in Formula 1 safety
+while identifying critical factors—such as track history, constructor
+background, and driver inexperience—that have historically contributed
+to higher fatality risks. The findings reinforce the importance of
+continuous safety innovation, especially in circuit design and team
+engineering practices, and they demonstrate how multi-dimensional
+statistical analysis can illuminate the evolution of risk in a
+high-speed professional sports.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

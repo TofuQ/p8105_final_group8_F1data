@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Lanlan_Qing" />
+
+<meta name="date" content="2025-11-14" />
+
+<title>Formula 1 Fatal Events: Data Preparation</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { color: #585cf6; } /* Constant */
+code span.co { color: #4c886b; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.dv { color: #0000cd; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cd; } /* Float */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { color: #687687; } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #036a07; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Formula 1 Fatal Events Analysis (1950-2024)</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="Proposal.html">Proposal</a>
+</li>
+<li>
+  <a href="step1_dataPreprocess.html">Data Preparation</a>
+</li>
+<li>
+  <a href="step2_EDAViz.html">Visualization</a>
+</li>
+<li>
+  <a href="step3_inferStat.html">Statistical Analysis</a>
+</li>
+<li>
+  <a href="step4_shiny.html">Interactive Explorer</a>
+</li>
+<li>
+  <a href="discussion.html">Discussion</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/TofuQ/p8105_final_group8_F1data.git">
+    <span class="fa fa-github"></span>
+     
+    GitHub
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Formula 1 Fatal Events: Data
+Preparation</h1>
+<h4 class="author">Lanlan_Qing</h4>
+<h4 class="date">2025-11-14</h4>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction">1.
+Introduction</a></li>
+<li><a href="#data-sources" id="toc-data-sources">2. Data
+Sources</a></li>
+<li><a href="#data-preparation" id="toc-data-preparation">3. Data
+Preparation</a>
+<ul>
+<li><a href="#required-libraries" id="toc-required-libraries">3.1
+Required Libraries</a></li>
+<li><a href="#load-and-prepare-race-and-circuit-information"
+id="toc-load-and-prepare-race-and-circuit-information">3.2 Load and
+Prepare Race and Circuit Information</a></li>
+<li><a href="#load-constructor-and-driver-information"
+id="toc-load-constructor-and-driver-information">3.3 Load Constructor
+and Driver Information</a></li>
+<li><a href="#combine-race-results-with-supporting-information"
+id="toc-combine-race-results-with-supporting-information">3.4 Combine
+Race Results with Supporting Information</a></li>
+<li><a href="#add-fatal-accident-information"
+id="toc-add-fatal-accident-information">3.5 Add Fatal Accident
+Information</a></li>
+</ul></li>
+<li><a href="#final-dataset-overview" id="toc-final-dataset-overview">4.
+Final Dataset Overview</a>
+<ul>
+<li><a href="#dataset-description" id="toc-dataset-description">4.1
+Dataset Description</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level2">
+<h2>1. Introduction</h2>
+<p>This document outlines the data preparation process for our analysis
+of fatal events in Formula 1 racing from 1950 to 2024. We combine data
+from multiple sources to create a comprehensive dataset that includes
+race information, driver details, constructor (team) information, and
+fatal event records.</p>
+</div>
+<div id="data-sources" class="section level2">
+<h2>2. Data Sources</h2>
+<p>The data for this analysis comes from two primary sources:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Formula 1 World Championship 1950-2020</strong>: A
+comprehensive dataset containing race results, driver information,
+constructor details, and circuit data.
+<ul>
+<li>Available at: <a
+href="https://www.kaggle.com/datasets/rohanrao/formula-1-world-championship-1950-2020"
+class="uri">https://www.kaggle.com/datasets/rohanrao/formula-1-world-championship-1950-2020</a></li>
+</ul></li>
+<li><strong>Formula 1 Race Events</strong>: A specialized dataset
+containing information about fatal accidents in Formula 1.
+<ul>
+<li>Available at: <a
+href="https://www.kaggle.com/datasets/jtrotman/formula-1-race-events/data"
+class="uri">https://www.kaggle.com/datasets/jtrotman/formula-1-race-events/data</a></li>
+</ul></li>
+</ol>
+<p>These datasets were downloaded and stored in the folders
+<code>formula-1-world-championship-1950-2020</code> and
+<code>formula-1-race-events</code> respectively.</p>
+</div>
+<div id="data-preparation" class="section level2">
+<h2>3. Data Preparation</h2>
+<p>Our data preparation process involves several steps:</p>
+<ol style="list-style-type: decimal">
+<li>Loading and preparing race and circuit information</li>
+<li>Loading constructor and driver details</li>
+<li>Combining race results with these datasets</li>
+<li>Adding fatal accident information</li>
+<li>Final data cleaning and formatting</li>
+</ol>
+<p>Let’s walk through each step using tidyverse functions for data
+manipulation.</p>
+<div id="required-libraries" class="section level3">
+<h3>3.1 Required Libraries</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code></pre></div>
+</div>
+<div id="load-and-prepare-race-and-circuit-information"
+class="section level3">
+<h3>3.2 Load and Prepare Race and Circuit Information</h3>
+<p>First, we load race information and combine it with circuit
+details:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Load and prepare races data</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>races <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;formula-1-world-championship-1950-2020/races.csv&#39;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">arrange</span>(date) <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Race =</span> <span class="fu">paste</span>(year, name)) <span class="sc">|&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="fu">select</span>(raceId, circuitId, year, name, date, Race)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co"># Load and prepare circuit data</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>circuit <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;formula-1-world-championship-1950-2020/circuits.csv&#39;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>    <span class="at">circuit.name =</span> name,</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>    <span class="at">circuit.location =</span> location,</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>    <span class="at">circuit.country =</span> country</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="fu">select</span>(circuitId, circuit.name, circuit.location, circuit.country, lat, lng)</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co"># Join circuit data to races</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>races <span class="ot">&lt;-</span> <span class="fu">left_join</span>(races, circuit, <span class="at">by =</span> <span class="st">&quot;circuitId&quot;</span>)</span></code></pre></div>
+</div>
+<div id="load-constructor-and-driver-information"
+class="section level3">
+<h3>3.3 Load Constructor and Driver Information</h3>
+<p>Next, we prepare constructor (team) and driver information:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Load and prepare constructor data</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>constructor <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;formula-1-world-championship-1950-2020/constructors.csv&#39;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="at">constructor.name =</span> name,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    <span class="at">constructor.nationality =</span> nationality</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>  <span class="fu">select</span>(constructorId, constructor.name, constructor.nationality)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co"># Load and prepare driver data</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>driver <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;formula-1-world-championship-1950-2020/drivers.csv&#39;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">driver.name =</span> <span class="fu">paste</span>(forename, surname)) <span class="sc">|&gt;</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="at">driver.nationality =</span> nationality,</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>    <span class="at">driver.dob =</span> dob</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  <span class="fu">select</span>(driverId, driver.name, driver.nationality, driver.dob)</span></code></pre></div>
+</div>
+<div id="combine-race-results-with-supporting-information"
+class="section level3">
+<h3>3.4 Combine Race Results with Supporting Information</h3>
+<p>We now load the race results and join them with the previously
+prepared datasets:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Load and prepare results data (initial dataOK creation)</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>dataOK <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;formula-1-world-championship-1950-2020/results.csv&#39;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">select</span>(raceId, driverId, constructorId, points) <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="co"># Join with previously prepared datasets</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="fu">left_join</span>(races, <span class="at">by =</span> <span class="st">&quot;raceId&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="fu">left_join</span>(constructor, <span class="at">by =</span> <span class="st">&quot;constructorId&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="fu">left_join</span>(driver, <span class="at">by =</span> <span class="st">&quot;driverId&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="fu">arrange</span>(date, <span class="fu">desc</span>(points))</span></code></pre></div>
+</div>
+<div id="add-fatal-accident-information" class="section level3">
+<h3>3.5 Add Fatal Accident Information</h3>
+<p>Finally, we incorporate the fatal accident data and finalize our
+dataset:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Load and prepare fatal driver data</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>fatalDriver <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;formula-1-race-events/fatal_accidents_drivers.csv&#39;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="co"># Keep only records in races dataset</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="fu">filter</span>(Event <span class="sc">%in%</span> races<span class="sc">$</span>Race) <span class="sc">|&gt;</span>  </span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="co"># Fix specific driver name for consistency</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Driver =</span> <span class="fu">if_else</span>(Driver <span class="sc">==</span> <span class="st">&#39;Jerry Unser Jr.&#39;</span>, <span class="st">&#39;Jerry Unser&#39;</span>, Driver)) <span class="sc">|&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  <span class="fu">filter</span>(Driver <span class="sc">!=</span> <span class="st">&quot;Bob Cortner&quot;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  <span class="co"># Create fatal data format</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>    <span class="at">Race =</span> Event,</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>    <span class="at">driver.name =</span> Driver</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">FATAL =</span> <span class="st">&#39;Death&#39;</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>  <span class="fu">select</span>(Race, driver.name, FATAL)</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co"># Join fatal data with main dataset</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>dataOK <span class="ot">&lt;-</span> dataOK <span class="sc">|&gt;</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>  <span class="fu">left_join</span>(fatalDriver, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;Race&quot;</span>, <span class="st">&quot;driver.name&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  <span class="co"># Replace NA with &#39;NULL&#39; for non-fatal events</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">FATAL =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(FATAL), <span class="st">&#39;NULL&#39;</span>, FATAL)) <span class="sc">|&gt;</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a>  <span class="co"># Sort by date and points</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>  <span class="fu">arrange</span>(date, <span class="fu">desc</span>(points)) <span class="sc">|&gt;</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  <span class="co"># Rename columns for consistency</span></span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>    <span class="at">driver.fatal =</span> FATAL,</span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>    <span class="at">driver.points =</span> points</span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>  )</span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a><span class="fu">save</span>(dataOK,<span class="at">file=</span><span class="st">&#39;dataOK.RData&#39;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="final-dataset-overview" class="section level2">
+<h2>4. Final Dataset Overview</h2>
+<p>The final dataset <code>dataOK</code> contains comprehensive
+information about Formula 1 races, drivers, constructors, and fatal
+events from 1950 to 2024.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Display dimensions of the final dataset</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">dim</span>(dataOK)</span></code></pre></div>
+<pre><code>## [1] 26759    20</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Display the structure of the dataset</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">glimpse</span>(dataOK)</span></code></pre></div>
+<pre><code>## Rows: 26,759
+## Columns: 20
+## $ raceId                  &lt;dbl&gt; 833, 833, 833, 833, 833, 833, 833, 833, 833, 833, 833, 833, 833, 833…
+## $ driverId                &lt;dbl&gt; 642, 786, 686, 704, 627, 619, 787, 741, 784, 778, 660, 579, 776, 669…
+## $ constructorId           &lt;dbl&gt; 51, 51, 51, 154, 154, 151, 151, 154, 105, 105, 154, 51, 126, 105, 10…
+## $ driver.points           &lt;dbl&gt; 9, 6, 4, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ circuitId               &lt;dbl&gt; 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9,…
+## $ year                    &lt;dbl&gt; 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1950, 19…
+## $ name                    &lt;chr&gt; &quot;British Grand Prix&quot;, &quot;British Grand Prix&quot;, &quot;British Grand Prix&quot;, &quot;B…
+## $ date                    &lt;date&gt; 1950-05-13, 1950-05-13, 1950-05-13, 1950-05-13, 1950-05-13, 1950-05…
+## $ Race                    &lt;chr&gt; &quot;1950 British Grand Prix&quot;, &quot;1950 British Grand Prix&quot;, &quot;1950 British …
+## $ circuit.name            &lt;chr&gt; &quot;Silverstone Circuit&quot;, &quot;Silverstone Circuit&quot;, &quot;Silverstone Circuit&quot;,…
+## $ circuit.location        &lt;chr&gt; &quot;Silverstone&quot;, &quot;Silverstone&quot;, &quot;Silverstone&quot;, &quot;Silverstone&quot;, &quot;Silvers…
+## $ circuit.country         &lt;chr&gt; &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;UK&quot;, &quot;U…
+## $ lat                     &lt;dbl&gt; 52.0786, 52.0786, 52.0786, 52.0786, 52.0786, 52.0786, 52.0786, 52.07…
+## $ lng                     &lt;dbl&gt; -1.01694, -1.01694, -1.01694, -1.01694, -1.01694, -1.01694, -1.01694…
+## $ constructor.name        &lt;chr&gt; &quot;Alfa Romeo&quot;, &quot;Alfa Romeo&quot;, &quot;Alfa Romeo&quot;, &quot;Talbot-Lago&quot;, &quot;Talbot-Lag…
+## $ constructor.nationality &lt;chr&gt; &quot;Swiss&quot;, &quot;Swiss&quot;, &quot;Swiss&quot;, &quot;French&quot;, &quot;French&quot;, &quot;British&quot;, &quot;British&quot;,…
+## $ driver.name             &lt;chr&gt; &quot;Nino Farina&quot;, &quot;Luigi Fagioli&quot;, &quot;Reg Parnell&quot;, &quot;Yves Cabantous&quot;, &quot;Lo…
+## $ driver.nationality      &lt;chr&gt; &quot;Italian&quot;, &quot;Italian&quot;, &quot;British&quot;, &quot;French&quot;, &quot;French&quot;, &quot;British&quot;, &quot;Bri…
+## $ driver.dob              &lt;date&gt; 1906-10-30, 1898-06-09, 1911-07-02, 1904-10-08, 1905-11-05, 1914-01…
+## $ driver.fatal            &lt;chr&gt; &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NULL&quot;, &quot;NUL…</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Show a few example rows</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">head</span>(dataOK, <span class="dv">10</span>)</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["raceId"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["driverId"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["constructorId"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["driver.points"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["circuitId"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["year"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["name"],"name":[7],"type":["chr"],"align":["left"]},{"label":["date"],"name":[8],"type":["date"],"align":["right"]},{"label":["Race"],"name":[9],"type":["chr"],"align":["left"]},{"label":["circuit.name"],"name":[10],"type":["chr"],"align":["left"]},{"label":["circuit.location"],"name":[11],"type":["chr"],"align":["left"]},{"label":["circuit.country"],"name":[12],"type":["chr"],"align":["left"]},{"label":["lat"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["lng"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["constructor.name"],"name":[15],"type":["chr"],"align":["left"]},{"label":["constructor.nationality"],"name":[16],"type":["chr"],"align":["left"]},{"label":["driver.name"],"name":[17],"type":["chr"],"align":["left"]},{"label":["driver.nationality"],"name":[18],"type":["chr"],"align":["left"]},{"label":["driver.dob"],"name":[19],"type":["date"],"align":["right"]},{"label":["driver.fatal"],"name":[20],"type":["chr"],"align":["left"]}],"data":[{"1":"833","2":"642","3":"51","4":"9","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Alfa Romeo","16":"Swiss","17":"Nino Farina","18":"Italian","19":"1906-10-30","20":"NULL"},{"1":"833","2":"786","3":"51","4":"6","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Alfa Romeo","16":"Swiss","17":"Luigi Fagioli","18":"Italian","19":"1898-06-09","20":"NULL"},{"1":"833","2":"686","3":"51","4":"4","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Alfa Romeo","16":"Swiss","17":"Reg Parnell","18":"British","19":"1911-07-02","20":"NULL"},{"1":"833","2":"704","3":"154","4":"3","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Talbot-Lago","16":"French","17":"Yves Cabantous","18":"French","19":"1904-10-08","20":"NULL"},{"1":"833","2":"627","3":"154","4":"2","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Talbot-Lago","16":"French","17":"Louis Rosier","18":"French","19":"1905-11-05","20":"NULL"},{"1":"833","2":"619","3":"151","4":"0","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"ERA","16":"British","17":"Bob Gerard","18":"British","19":"1914-01-19","20":"NULL"},{"1":"833","2":"787","3":"151","4":"0","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"ERA","16":"British","17":"Cuth Harrison","18":"British","19":"1906-07-06","20":"NULL"},{"1":"833","2":"741","3":"154","4":"0","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Talbot-Lago","16":"French","17":"Philippe Étancelin","18":"French","19":"1896-12-28","20":"NULL"},{"1":"833","2":"784","3":"105","4":"0","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Maserati","16":"Italian","17":"David Hampshire","18":"British","19":"1917-12-29","20":"NULL"},{"1":"833","2":"778","3":"105","4":"0","5":"9","6":"1950","7":"British Grand Prix","8":"1950-05-13","9":"1950 British Grand Prix","10":"Silverstone Circuit","11":"Silverstone","12":"UK","13":"52.0786","14":"-1.01694","15":"Maserati","16":"Italian","17":"Brian Shawe Taylor","18":"British","19":"1915-01-28","20":"NULL"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Summary of fatal events</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">table</span>(dataOK<span class="sc">$</span>driver.fatal)</span></code></pre></div>
+<pre><code>## 
+## Death  NULL 
+##    25 26734</code></pre>
+<div id="dataset-description" class="section level3">
+<h3>4.1 Dataset Description</h3>
+<p>The final <code>dataOK</code> dataset contains 26759 records with 20
+variables. Each row represents a driver’s participation in a specific
+race. The key columns include:</p>
+<ul>
+<li><strong>Race information</strong>: <code>Race</code> (unique
+identifier), <code>raceId</code>, <code>year</code>, <code>date</code>,
+<code>name</code> (race name)</li>
+<li><strong>Circuit information</strong>: <code>circuit.name</code>,
+<code>circuit.location</code>, <code>circuit.country</code>,
+<code>lat</code>, <code>lng</code> (geographical coordinates)</li>
+<li><strong>Constructor information</strong>:
+<code>constructor.name</code>, <code>constructor.nationality</code></li>
+<li><strong>Driver information</strong>: <code>driver.name</code>,
+<code>driver.nationality</code>, <code>driver.dob</code> (date of
+birth)</li>
+<li><strong>Performance information</strong>: <code>driver.points</code>
+(points scored in the race)</li>
+<li><strong>Fatal events</strong>: <code>driver.fatal</code> (indicates
+if the driver had a fatal accident, “Death” or “NULL”)</li>
+</ul>
+<p>This dataset provides a rich foundation for analyzing the patterns
+and factors associated with fatal events in Formula 1 racing over its
+history.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
