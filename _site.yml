@@ -29,7 +29,7 @@ output:
     toc: false
     code_folding: "show"
     code_download: false
-    highlight: github
+    highlight: rstudio
     df_print: paged
     fig_width: 10
     fig_height: 6
