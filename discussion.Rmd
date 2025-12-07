@@ -2,10 +2,16 @@
 title: "Discussion"
 output:
   html_document:
-    theme: cosmo
-    toc: true
-    code_folding: "hide"
-    df_print: paged  
+    theme: flatly
+    css: styles.css
+    toc: false
+    code_folding: "show"
+    code_download: false
+    highlight: rstudio
+    df_print: paged
+    fig_width: 10
+    fig_height: 6
+    fig_retina: 3
 ---
 This study provides a comprehensive statistical analysis of fatal events in Formula 1 racing from 1950 to 2024, integrating temporal trends, driver characteristics, circuit features, constructor histories, and multivariate modeling. Across all sections of analysis, one central conclusion emerges: **fatal events in Formula 1 have dramatically declined over time**, but the risk patterns are shaped by a combination of historical, structural, and driver-level factors.
 

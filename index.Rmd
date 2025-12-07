@@ -13,8 +13,6 @@ output:
     fig_width: 10
     fig_height: 6
     fig_retina: 3
-    includes:
-      in_header: header.html
 ---
 
 ## Overview
