@@ -13,7 +13,8 @@ output:
     df_print: paged  
     fig_width: 10  
     fig_height: 6 
-    fig_retina: 3 
+    fig_retina: 3
+    self_contained: false
 ---
 
 ```{r setup, include=FALSE}
