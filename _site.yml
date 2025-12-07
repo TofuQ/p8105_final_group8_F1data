@@ -7,7 +7,7 @@ navbar:
     - text: "Home"
       href: index.html
     - text: "Proposal"
-      href: proposal.html
+      href: Proposal.html
     - text: "Data Preparation"
       href: step1_dataPreprocess.html
     - text: "Visualization"
