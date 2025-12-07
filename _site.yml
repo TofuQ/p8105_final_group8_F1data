@@ -1,4 +1,4 @@
-name: "LanlanF1"
+name: "F1"
 output_dir: "."
 
 navbar:
@@ -34,5 +34,6 @@ output:
     fig_width: 10
     fig_height: 6
     fig_retina: 3
-
+    includes:
+      after_body: footer.html
 
