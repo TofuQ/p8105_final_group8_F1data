@@ -1,0 +1,24 @@
+name: "F1"
+output-dir: . 
+navbar:
+  title: "Formula 1 Fatal Events Analysis (1950-2024)"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Proposal"
+      href: Proposal.html
+    - text: "Data Preparation"
+      href: step1_dataPreprocess.html
+    - text: "Visualization"
+      href: step2_EDAViz.html
+    - text: "Statistical Analysis"
+      href: step3_inferStat.html
+    - text: "Interactive Explorer"
+      href: step4_shiny.html
+    - text: "Discussion"
+      href: discussion.html
+  right:
+    - icon: fa-github  
+      text: "GitHub"
+      href: "https://github.com/TofuQ/p8105_final_group8_F1data.git"
+navbar_style: "inverse"  
