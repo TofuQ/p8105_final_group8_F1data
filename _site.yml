@@ -20,5 +20,5 @@ navbar:
   right:
     - icon: fa-github  
       text: "GitHub"
-      href: "https://github.com/TofuQ/p8105_final_group8_F1data.git"
+      href: "https://tofuq.github.io/p8105_final_group8_F1data/"
 navbar_style: "inverse"  
