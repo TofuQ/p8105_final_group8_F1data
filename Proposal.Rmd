@@ -1,11 +1,19 @@
 ---
+title: "Proposal"
 output:
   html_document:
-    theme: cosmo
-    toc: true
-    code_folding: "hide"
-    df_print: paged 
-    self_contained: false 
+    theme: flatly
+    css: styles.css
+    toc: false
+    code_folding: "show"
+    code_download: false
+    highlight: rstudio
+    df_print: paged
+    fig_width: 10
+    fig_height: 6
+    fig_retina: 3
+    includes:
+      in_header: header.html
 ---
 ## Motivation
 

@@ -2,15 +2,16 @@
 title: "Formula 1 Fatal Events: Data Visualization Analysis (1950-2024)"
 output: 
   html_document:
-    theme: cosmo
-    toc: true
-    toc-depth: 3
-    code-fold: true
-    code-tools: false
-    df-print: paged
-    fig-width: 10
-    fig-height: 6
-    fig-dpi: 300
+    theme: flatly  
+    css: styles.css  
+    toc: true  
+    code_folding: "hide" 
+    code_download: false  
+    highlight: rstudio  
+    df_print: paged  
+    fig_width: 10  
+    fig_height: 6 
+    fig_retina: 3 
     self_contained: false
 ---
 

@@ -1,6 +1,5 @@
 name: "F1"
-output_dir: "."
-
+output_dir: "docs"  
 navbar:
   title: "Formula 1 Fatal Events Analysis (1950-2024)"
   left:
@@ -19,20 +18,7 @@ navbar:
     - text: "Discussion"
       href: discussion.html
   right:
-    - icon: fa-github
+    - icon: fa-github  
+      text: "GitHub"
       href: "https://github.com/TofuQ/p8105_final_group8_F1data.git"
-
-output:
-  html_document:
-    theme: flatly      
-    css: styles.css
-    toc: false
-    code_folding: "show"
-    code_download: false
-    highlight: rstudio
-    df_print: paged
-    fig_width: 10
-    fig_height: 6
-    fig_retina: 3
-    
-
+navbar_style: "inverse"  

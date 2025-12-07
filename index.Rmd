@@ -3,7 +3,18 @@ title: "Formula 1 Fatal Events Analysis"
 subtitle: "A Comprehensive Study of Safety in F1 Racing (1950-2024)"
 output:
   html_document:
-    self_contained: false 
+    theme: flatly
+    css: styles.css
+    toc: false
+    code_folding: "show"
+    code_download: false
+    highlight: rstudio
+    df_print: paged
+    fig_width: 10
+    fig_height: 6
+    fig_retina: 3
+    includes:
+      in_header: header.html
 ---
 
 ## Overview

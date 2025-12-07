@@ -4,10 +4,16 @@ author: "Lanlan_Qing"
 date: "2025-11-14"
 output:
   html_document:
-    theme: cosmo
-    toc: true
-    code_folding: "hide"
+    theme: flatly  
+    css: styles.css  
+    toc: true  
+    code_folding: "hide" 
+    code_download: false  
+    highlight: rstudio  
     df_print: paged  
+    fig_width: 10  
+    fig_height: 6 
+    fig_retina: 3 
 ---
 
 ```{r setup, include=FALSE}

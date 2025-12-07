@@ -2,10 +2,12 @@
 title: "Formula 1 Fatal Events: Interactive Explorer"
 output:
   html_document:
-    code_folding: "hide"       
-    code_tools: false           
-    toc: false 
-    layout: "full_width" 
+    theme: flatly
+    css: styles.css
+    code_folding: "hide"
+    toc: false
+    self_contained: false
+    highlight: rstudio
 ---
 
 ## Interactive Data Explorer
@@ -18,24 +20,24 @@ This interactive Shiny application <https://lq2250.shinyapps.io/p8105_final_grou
 - **Analytics Dashboard**: Explore annual trends, constructor distributions, and nationality patterns
 - **Data Table**: Browse and download filtered race results data
 
-:::{.column-screen-inset}
-```{=html}
-<iframe 
-  src="https://lq2250.shinyapps.io/p8105_final_group8_f1data/" 
-  width="100%" 
-  height="900px" 
-  style="border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);"
-  allowfullscreen>
-</iframe>
-```
-:::
+<!-- Replace Quarto column-screen-inset with pure HTML -->
+<div style="width: 100%; padding: 0 15px; margin: 20px 0;">
+  <iframe 
+    src="https://lq2250.shinyapps.io/p8105_final_group8_f1data/" 
+    width="100%" 
+    height="900px" 
+    style="border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);"
+    allowfullscreen>
+  </iframe>
+</div>
 
-::: {.callout-tip}
-## Tips for Using the Explorer
-- Use the sidebar filters to narrow down the data
-- Click on map markers to see detailed circuit information
-- In the Data Table, fatal events are highlighted in red and appear first
-- Use the Download button to export filtered data
-:::
-
-
+<!-- Replace Quarto callout-tip with R Markdown alert -->
+<div class="alert alert-info" style="border-left: 4px solid #E10600; margin: 20px 0; padding: 15px;">
+  <h4 style="color: #E10600; margin-top: 0;">Tips for Using the Explorer</h4>
+  <ul style="margin-bottom: 0;">
+    <li>Use the sidebar filters to narrow down the data</li>
+    <li>Click on map markers to see detailed circuit information</li>
+    <li>In the Data Table, fatal events are highlighted in red and appear first</li>
+    <li>Use the Download button to export filtered data</li>
+  </ul>
+</div>

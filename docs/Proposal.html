@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>proposal.knit</title>
+
+<script src="proposal_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="proposal_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="proposal_files/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="proposal_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="proposal_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="proposal_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="proposal_files/navigation-1.1/tabsets.js"></script>
+<script src="proposal_files/navigation-1.1/codefolding.js"></script>
+<link href="proposal_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="proposal_files/highlightjs-9.12.0/highlight.js"></script>
+<link href="proposal_files/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="proposal_files/pagedtable-1.1/js/pagedtable.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#motivation" id="toc-motivation">Motivation</a></li>
+<li><a href="#related-work" id="toc-related-work">Related Work</a></li>
+<li><a href="#initial-questions" id="toc-initial-questions">Initial
+Questions</a></li>
+<li><a href="#data" id="toc-data">Data</a></li>
+<li><a href="#site-creators" id="toc-site-creators">Site
+Creators</a></li>
+</ul>
+</div>
+
+<div id="motivation" class="section level2">
+<h2>Motivation</h2>
+<p>Formula 1 (F1) is one of the most technologically advanced and
+globally followed motorsports in the world. However, throughout much of
+its early history, it was also one of the most dangerous. Fatal
+accidents, particularly between the 1950s and 1970s, were tragically
+common due to minimal safety regulations, developing engineering
+standards, and the extreme risks associated with high-speed racing.</p>
+<p>The goal of this project is to examine <strong>fatal driver events in
+Formula 1 from 1950 to 2024</strong> and evaluate how safety has evolved
+over time. We aim to understand:</p>
+<ul>
+<li><p>When and why fatal events occurred.</p></li>
+<li><p>How fatality counts have changed over the decades.</p></li>
+<li><p>Whether certain teams, countries, or time periods were
+disproportionately associated with fatalities.</p></li>
+<li><p>Whether there is statistical evidence of improved safety
+following major regulatory changes.</p></li>
+</ul>
+<p>This project highlights the evolution of safety in Formula 1 and
+provides a historical perspective on the sport’s most critical
+improvements</p>
+</div>
+<div id="related-work" class="section level2">
+<h2>Related Work</h2>
+<p>Our project was inspired by:</p>
+<ul>
+<li><p>Historical F1 fatality archives such as OldRacingCars, StatsF1,
+and Wikipedia’s list of fatal accidents.</p></li>
+<li><p>Discussions in class about web scraping, data cleaning, and
+exploratory visualization.</p></li>
+<li><p>Prior analyses on motorsport safety published in journalistic
+outlets and blogs, many of which show descriptive trends but lack
+statistical evaluation.</p></li>
+<li><p>The FIA’s safety reports and the significant regulatory reforms
+implemented after the deaths of Ayrton Senna and Roland Ratzenberger in
+1994.</p></li>
+<li><p>These sources influenced our project questions, website
+structure, and statistical methods.</p></li>
+</ul>
+</div>
+<div id="initial-questions" class="section level2">
+<h2>Initial Questions</h2>
+<p>At the beginning of the project, we aimed to answer broad
+questions:</p>
+<ol style="list-style-type: decimal">
+<li><p>How many fatal driver accidents have occurred in Formula 1
+history?</p></li>
+<li><p>Which time periods had the highest fatality rates?</p></li>
+<li><p>Which constructors and countries were most associated with fatal
+events?</p></li>
+<li><p>Did major regulatory changes significantly reduce
+fatalities?</p></li>
+</ol>
+<p>As the project evolved, additional questions emerged:</p>
+<ul>
+<li><p>Were certain circuits or race types more dangerous?</p></li>
+<li><p>Were younger or less experienced drivers more at risk?</p></li>
+<li><p>How did the distribution of fatalities shift geographically over
+time?</p></li>
+</ul>
+<p>During the exploratory phase, we refined our focus toward three major
+analytical themes:</p>
+<ol style="list-style-type: decimal">
+<li><p>Temporal trends (fatalities per decade)</p></li>
+<li><p>Constructors and nationalities associated with
+fatalities</p></li>
+<li><p>Inferential testing to determine whether safety significantly
+improved after 1994</p></li>
+</ol>
+<p>These new questions guided our statistical analysis and website
+design.</p>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<div id="data-source" class="section level4">
+<h4>Data Source</h4>
+<p>Fatal event data was collected from a consolidated dataset derived
+from publicly available motorsport records.</p>
+<p>Each fatal event entry included:</p>
+<ul>
+<li><p>Driver name</p></li>
+<li><p>Date of accident</p></li>
+<li><p>Race event and year</p></li>
+<li><p>Country and circuit</p></li>
+<li><p>Race type</p></li>
+<li><p>Constructor (team)</p></li>
+<li><p>Cause of death or accident description</p></li>
+</ul>
+</div>
+<div id="scraping-method" class="section level4">
+<h4>Scraping Method</h4>
+<p>The original dataset was assembled using a combination of:</p>
+<ul>
+<li><p>Web scraping from motorsport archives</p></li>
+<li><p>Manual verification of ambiguous entries</p></li>
+<li><p>Text extraction and parsing from HTML tables</p></li>
+<li><p>Regular expressions to standardize date formats and
+names</p></li>
+</ul>
+</div>
+<div id="cleaning-steps" class="section level4">
+<h4>Cleaning Steps</h4>
+<p>Cleaning required substantial work due to inconsistent formats across
+sources:</p>
+<ul>
+<li><p>Dates were converted into numeric year and month fields.</p></li>
+<li><p>Constructor names were standardized (e.g., “Ferrari”, “Scuderia
+Ferrari”).</p></li>
+<li><p>Driver names were trimmed and normalized.</p></li>
+<li><p>Countries were consolidated where naming variations existed
+(e.g., “UK” vs “United Kingdom”).</p></li>
+<li><p>Missing values in nationality or constructor were imputed or
+labeled <code>Unknown</code>.</p></li>
+</ul>
+<p>A final, cleaned dataset was produced and used for all subsequent
+analyses.</p>
+</div>
+</div>
+<div id="site-creators" class="section level2">
+<h2>Site Creators</h2>
+<p>Angela Lin(al4925), Haochen Yu(hy2951), Jicong Zhang(jz3899), Lanlan
+Qing(lq2250)</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
