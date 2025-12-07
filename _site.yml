@@ -1,60 +1,38 @@
-project:
-  type: website
-  output-dir: .
+name: "LanlanF1"
+output_dir: "."
 
-website:
+navbar:
   title: "Formula 1 Fatal Events Analysis (1950-2024)"
-  description: "A comprehensive analysis of fatal events in Formula 1 racing history"
-  sidebar: false
-  navbar:
-    background: "#15151E"
-    foreground: "#FFFFFF"
-    logo: "https://www.formula1.com/etc/designs/fom-website/images/f1_logo.svg"
-    logo-alt: "F1 Logo"
-    left:
-      - href: index.Rmd
-        text: Home
-      - href: proposal.Rmd
-        text: Proposal
-      - href: step1_dataPreprocess.Rmd
-        text: Data Preparation
-      - href: step2_EDAViz.Rmd
-        text: Visualization
-      - href: step3_inferStat.Rmd
-        text: Statistical Analysis
-      - href: step4_shiny.Rmd
-        text: Interactive Explorer
-      - herf: discussion.Rmd
-        text: Discussion
-    right:
-      - icon: github
-        href: https://github.com/TofuQ/p8105_final_group8_F1data.git
-        aria-label: GitHub
- 
-  page-footer:
-    center: |
-      © 2024 Formula 1 Fatal Events Analysis Project
-    background: "#15151E"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Proposal"
+      href: proposal.html
+    - text: "Data Preparation"
+      href: step1_dataPreprocess.html
+    - text: "Visualization"
+      href: step2_EDAViz.html
+    - text: "Statistical Analysis"
+      href: step3_inferStat.html
+    - text: "Interactive Explorer"
+      href: step4_shiny.html
+    - text: "Discussion"
+      href: discussion.html
+  right:
+    - icon: fa-github
+      href: "https://github.com/TofuQ/p8105_final_group8_F1data.git"
 
-format:
-  html:
-    theme:
-      light: flatly
-      dark: darkly
+output:
+  html_document:
+    theme: flatly      
     css: styles.css
     toc: false
-    toc-depth: 3
-    code-fold: true
-    code-tools: true
-    code-copy: true
-    highlight-style: github
-    df-print: paged
-    fig-width: 10
-    fig-height: 6
-    fig-dpi: 300
-    page-layout: full
+    code_folding: "show"
+    code_download: false
+    highlight: github
+    df_print: paged
+    fig_width: 10
+    fig_height: 6
+    fig_retina: 3
 
-execute:
-  warning: false
-  message: false
-  echo: true
+
