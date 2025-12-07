@@ -23,10 +23,10 @@ This project presents a comprehensive analysis of fatal events in Formula 1 raci
 
 | Section | Description |
 |---------|-------------|
-| [Data Preparation](step1_dataPreprocess.qmd) | Data sources, cleaning, and preprocessing |
-| [Exploratory Visualization](step2_EDAViz.qmd) | Visual exploration of temporal trends, circuits, constructors, and driver factors |
-| [Statistical Analysis](step3_inferStat.qmd) | Inferential statistics including chi-square tests, t-tests, ANOVA, and logistic regression |
-| [Interactive Explorer](step4_shiny.qmd) | Shiny application for interactive data exploration |
+| [Data Preparation](step1_dataPreprocess.Rmd) | Data sources, cleaning, and preprocessing |
+| [Exploratory Visualization](step2_EDAViz.Rmd) | Visual exploration of temporal trends, circuits, constructors, and driver factors |
+| [Statistical Analysis](step3_inferStat.Rmd) | Inferential statistics including chi-square tests, t-tests, ANOVA, and logistic regression |
+| [Interactive Explorer](step4_shiny.Rmd) | Shiny application for interactive data exploration |
 | [Screencast]() | Recording for a description of our project |
 
 ## Key Findings
